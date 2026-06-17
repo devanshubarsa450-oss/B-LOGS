@@ -32,14 +32,6 @@
       }
     }
   </script>
-  
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_TRACKING_ID"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-YOUR_TRACKING_ID', { 'anonymize_ip': true });
-  </script>
 
   <style>
     body { background-color: #F5ECFF; color: #4A3E56; padding-bottom: 64px; }
@@ -184,9 +176,10 @@
             <span id="upload-status-indicator" class="font-poppins text-[11px] text-brandAccent font-semibold mt-2 hidden">Processing background file transfer...</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Source Route Link</label><input type="text" id="input-article-source-url" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="https://vogue.com/article"></div>
-            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Geographic Location Coordinate</label><input type="text" id="input-article-location" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="e.g., Paris, France"></div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Source / Publisher Name</label><input type="text" id="input-article-source" required class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="e.g., Vogue, My Studio"></div>
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Source Link URL</label><input type="text" id="input-article-source-url" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="https://vogue.com/article"></div>
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Geographic Location</label><input type="text" id="input-article-location" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="e.g., Paris, France"></div>
             <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Metadata Content Tag</label><input type="text" id="input-article-tag" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="e.g., #HauteCouture"></div>
           </div>
           <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Full Core Post Body Description (HTML Supported)</label><textarea id="input-article-body" rows="4" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-satoshi text-[15px]" placeholder="Detailed analysis body text paragraphs..."></textarea></div>
@@ -239,13 +232,49 @@
       { id: "p1", title: "Bespoke Portfolio Creation Work Piece", excerpt: "Your original publications and hand-forged archive listings populate within this viewport panel.", category: "diamond_jewelry", source: "Studio", media_assets: ["https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800"], is_original: true, is_advertisement: false }
     ];
 
+    // INTELLIGENT DATA INTERPRETATION ENGINE (Converts SQL Array text clean into JS Arrays)
+    // function sanitizeMediaAssetsList(rawInput) {
+    //   const standardFallback = "https://images.unsplash.com/photo-1543872084-c7bd3822856f?w=800";
+    //   if (!rawInput) return [standardFallback];
+    //   if (Array.isArray(rawInput)) return rawInput.length > 0 ? rawInput : [standardFallback];
+      
+    //   if (typeof rawInput === 'string') {
+    //     // Strip out postgres array brace formatting characters: { }, [ ], or structural quotes
+    //     let dynamicString = rawInput.replace(/[\{\}\[\]\"]/g, '').trim();
+    //     if (!dynamicString) return [standardFallback];
+    //     return dynamicString.split(',').map(link => link.trim()).filter(link => link.length > 0);
+    //   }
+    //   return [standardFallback];
+    // }
+    // INTELLIGENT DATA INTERPRETATION ENGINE (Converts SQL Array text clean into JS Arrays)
+function sanitizeMediaAssetsList(rawInput) {
+  const standardFallback = "https://images.unsplash.com/photo-1543872084-c7bd3822856f?w=800";
+  if (!rawInput) return [standardFallback];
+  
+  // 1. If it's already an array, make sure all entries start with http
+  if (Array.isArray(rawInput)) {
+    let cleanArr = rawInput.map(link => String(link).trim()).filter(link => link.startsWith('http'));
+    return cleanArr.length > 0 ? cleanArr : [standardFallback];
+  }
+  
+  // 2. If it's a text block from Postgres, strip brackets and ensure links start with http
+  if (typeof rawInput === 'string') {
+    let dynamicString = rawInput.replace(/[\{\}\[\]\"]/g, '').trim();
+    if (!dynamicString) return [standardFallback];
+    
+    // Crucial Update: This filters out things like "serv" by forcing links to start with http:// or https://
+    let cleanArr = dynamicString.split(',').map(link => link.trim()).filter(link => link.startsWith('http'));
+    return cleanArr.length > 0 ? cleanArr : [standardFallback];
+  }
+  return [standardFallback];
+}
+
     window.addEventListener('DOMContentLoaded', async () => {
       handleGatekeeperHandshakePassphrase();
       if(!SUPABASE_URL.includes("your-project-id")) {
         _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         await synchronizeApplicationState();
         
-        // REFINED INTELLIGENT EXCLUSION ENGINE (Bypasses Admin & Dedupes Page Refreshes)
         const isAdminDevice = localStorage.getItem('b_logs_device_verified_token') === 'true';
         const isSessionAlreadyTracked = sessionStorage.getItem('b_logs_session_logged') === 'true';
         
@@ -260,7 +289,6 @@
       if (defaultMobileTab) triggerMobileNavigation(defaultMobileTab, 'home-view');
     });
 
-    // PASSKEY VALIDATION GATEKEEPER AUTOMATION HANDSHAKE
     function handleGatekeeperHandshakePassphrase() {
       const parsedQueries = new URLSearchParams(window.location.search);
       const linkingPasskey = parsedQueries.get('gate');
@@ -276,7 +304,6 @@
       }
     }
 
-    // ADVANCED MOBILE GALLERY & PHONE STORAGE INGESTION INTERACTION ENGINE
     async function processDeviceMediaBucketUpload(inputSource) {
       if(!_supabase) { alert("Core configuration error: Live database pipeline keys are missing."); return; }
       const filesList = inputSource.files;
@@ -320,10 +347,8 @@
     }
 
     async function logNativeTelemetryEvent(typeString, targetMeta) {
-      // Exclude Admin device from firing user metrics even on click interactions
       const isAdminDevice = localStorage.getItem('b_logs_device_verified_token') === 'true';
       if(!_supabase || isAdminDevice) return;
-      
       await _supabase.from('site_telemetry').insert([{ event_type: typeString, target_meta: targetMeta }]);
     }
 
@@ -355,11 +380,14 @@
       const badgeMarkup = item.is_advertisement ? `<span class="absolute top-4 right-4 bg-brandAccent text-brandBg text-[10px] font-bold tracking-widest uppercase py-1 px-2.5 rounded-md z-10 font-poppins">Sponsor Ad</span>` : '';
       const categoryLabelMap = { 'diamond_jewelry': 'Fine Jewelry', 'branded_clothing': 'Branded Clothing', 'fashion_fame': 'Fashion Fame', 'luxury_investment': 'Luxury Investments', 'affordable_luxury': 'Affordable Luxury' };
       
+      // Parse array elements cleanly through safeguard filter
+      const mediaList = sanitizeMediaAssetsList(item.media_assets);
+      
       return `
         <article class="${adStyleWrapper} overflow-hidden flex flex-col rounded-[24px] p-2 group animate-fadeIn">
           ${badgeMarkup}
           <div class="w-full aspect-[4/3] rounded-[18px] overflow-hidden relative">
-            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="${item.media_assets[0]}" alt="${item.title}" loading="lazy">
+            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="${mediaList[0]}" alt="${item.title}" loading="lazy">
           </div>
           <div class="pt-4 px-2 flex flex-col flex-grow">
             <h2 class="font-caslonBold text-[22px] text-h1Color leading-tight mb-2">${item.title}</h2>
@@ -398,19 +426,22 @@
       const originalWorks = PLATFORM_STORE.filter(item => item.is_original);
       const categoryLabelMap = { 'diamond_jewelry': 'Fine Jewelry', 'branded_clothing': 'Branded Clothing', 'fashion_fame': 'Fashion Fame', 'luxury_investment': 'Luxury Investments', 'affordable_luxury': 'Affordable Luxury' };
 
-      targetGrid.innerHTML = originalWorks.map(project => `
-        <div class="flex flex-col md:flex-row gap-6 items-start group animate-fadeIn">
-          <div class="w-full md:w-1/3 aspect-[4/3] rounded-[16px] overflow-hidden shadow-none">
-            <img class="w-full h-full object-cover" src="${project.media_assets[0]}" alt="${project.title}">
+      targetGrid.innerHTML = originalWorks.map(project => {
+        const mediaList = sanitizeMediaAssetsList(project.media_assets);
+        return `
+          <div class="flex flex-col md:flex-row gap-6 items-start group animate-fadeIn">
+            <div class="w-full md:w-1/3 aspect-[4/3] rounded-[16px] overflow-hidden shadow-none">
+              <img class="w-full h-full object-cover" src="${mediaList[0]}" alt="${project.title}">
+            </div>
+            <div class="w-full md:w-2/3">
+              <span class="font-poppins text-[13.33px] text-brandAccent font-medium">~ Original — ${categoryLabelMap[project.category] || 'Studio Piece'}</span>
+              <h3 class="font-caslonBold text-[22px] text-h1Color mt-1 mb-2">${project.title}</h3>
+              <p class="font-satoshi text-[13.33px] text-bodyColor leading-relaxed mb-4">${project.excerpt}</p>
+              <button onclick="openProjectReader('${project.id}')" class="text-brandAccent font-caslonReg font-bold text-[14px] inline-flex items-center space-x-1 border-b border-brandAccent hover:border-transparent transition-all"><span>Explore Project Portfolio</span> <span>&rarr;</span></button>
+            </div>
           </div>
-          <div class="w-full md:w-2/3">
-            <span class="font-poppins text-[13.33px] text-brandAccent font-medium">~ Original — ${categoryLabelMap[project.category] || 'Studio Piece'}</span>
-            <h3 class="font-caslonBold text-[22px] text-h1Color mt-1 mb-2">${project.title}</h3>
-            <p class="font-satoshi text-[13.33px] text-bodyColor leading-relaxed mb-4">${project.excerpt}</p>
-            <button onclick="openProjectReader('${project.id}')" class="text-brandAccent font-caslonReg font-bold text-[14px] inline-flex items-center space-x-1 border-b border-brandAccent hover:border-transparent transition-all"><span>Explore Project Portfolio</span> <span>&rarr;</span></button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function openProjectReader(projectId) {
@@ -424,20 +455,25 @@
       document.getElementById('read-project-title').innerText = project.title;
       document.getElementById('read-project-body').innerHTML = project.body || `<p>${project.excerpt}</p>`;
 
+      const mediaList = sanitizeMediaAssetsList(project.media_assets);
       const track = document.getElementById('carousel-track-wrapper'); const dotsDock = document.getElementById('carousel-indicators-dock');
-      track.innerHTML = project.media_assets.map(url => `<div class="w-full h-full flex-shrink-0"><img class="w-full h-full object-cover" src="${url}"></div>`).join('');
-      dotsDock.innerHTML = project.media_assets.map((_, idx) => `<button onclick="jumpToCarouselFrame(${idx})" class="carousel-dot-node w-2.5 h-2.5 rounded-full bg-white/50 transition-all duration-300"></button>`).join('');
+      
+      track.innerHTML = mediaList.map(url => `<div class="w-full h-full flex-shrink-0"><img class="w-full h-full object-cover" src="${url}"></div>`).join('');
+      dotsDock.innerHTML = mediaList.map((_, idx) => `<button onclick="jumpToCarouselFrame(${idx})" class="carousel-dot-node w-2.5 h-2.5 rounded-full bg-white/50 transition-all duration-300"></button>`).join('');
 
       activeCarouselIndex = 0; updateCarouselDOMPosition();
-      autoCarouselTimer = setInterval(() => { activeCarouselIndex = (activeCarouselIndex + 1) % project.media_assets.length; updateCarouselDOMPosition(); }, 2000);
+      autoCarouselTimer = setInterval(() => { activeCarouselIndex = (activeCarouselIndex + 1) % mediaList.length; updateCarouselDOMPosition(); }, 2000);
 
       const alternatives = PLATFORM_STORE.filter(p => p.is_original && p.id !== projectId);
-      document.getElementById('more-projects-deck').innerHTML = alternatives.map(p => `
-        <div onclick="openProjectReader('${p.id}')" class="min-w-[260px] md:min-w-[300px] bg-brandBg p-4 rounded-[20px] cursor-pointer snap-start flex-shrink-0 group">
-          <div class="w-full h-36 rounded-[14px] overflow-hidden mb-3"><img class="w-full h-full object-cover" src="${p.media_assets[0]}"></div>
-          <h5 class="font-caslonBold text-[16px] text-h1Color line-clamp-2 mt-0.5 group-hover:text-brandAccent">${p.title}</h5>
-        </div>
-      `).join('');
+      document.getElementById('more-projects-deck').innerHTML = alternatives.map(p => {
+        const altMedia = sanitizeMediaAssetsList(p.media_assets);
+        return `
+          <div onclick="openProjectReader('${p.id}')" class="min-w-[260px] md:min-w-[300px] bg-brandBg p-4 rounded-[20px] cursor-pointer snap-start flex-shrink-0 group">
+            <div class="w-full h-36 rounded-[14px] overflow-hidden mb-3"><img class="w-full h-full object-cover" src="${altMedia[0]}"></div>
+            <h5 class="font-caslonBold text-[16px] text-h1Color line-clamp-2 mt-0.5 group-hover:text-brandAccent">${p.title}</h5>
+          </div>
+        `;
+      }).join('');
       document.getElementById('portfolio-reader-wrapper').classList.replace('hidden', 'block'); window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -465,13 +501,15 @@
     function loadItemIntoConsoleForm(id) {
       const item = PLATFORM_STORE.find(i => i.id === id); if(!item) return;
       
-      // Load selected article data fields securely into the workspace text fields
+      const mediaList = sanitizeMediaAssetsList(item.media_assets);
+      
       document.getElementById('mutation-target-id').value = item.id;
       document.getElementById('input-article-title').value = item.title;
       document.getElementById('input-article-excerpt').value = item.excerpt;
-      document.getElementById('input-article-media-urls').value = item.media_assets.join(', ');
+      document.getElementById('input-article-media-urls').value = mediaList.join(', ');
       document.getElementById('input-article-body').value = item.body || '';
       document.getElementById('input-article-category').value = item.category;
+      document.getElementById('input-article-source').value = item.source || '';
       document.getElementById('input-article-location').value = item.location_info || '';
       document.getElementById('input-article-tag').value = item.content_tag || '';
       document.getElementById('input-article-source-url').value = item.url || '';
@@ -500,19 +538,22 @@
 
     async function commitDataMutation(event) {
       event.preventDefault(); if(!_supabase) return;
+      
       const targetId = document.getElementById('mutation-target-id').value;
       const title = document.getElementById('input-article-title').value;
       const excerpt = document.getElementById('input-article-excerpt').value;
       const mediaRaw = document.getElementById('input-article-media-urls').value;
       const body = document.getElementById('input-article-body').value;
       const category = document.getElementById('input-article-category').value;
+      const source = document.getElementById('input-article-source').value || "Studio Admin";
       const location_info = document.getElementById('input-article-location').value;
       const content_tag = document.getElementById('input-article-tag').value;
       const sourceUrl = document.getElementById('input-article-source-url').value;
       const type = document.getElementById('input-article-type').value;
       
-      const mediaAssets = mediaRaw.split(',').map(url => url.trim());
-      const payload = { title, excerpt, body, category, media_assets: mediaAssets, location_info, content_tag, url: sourceUrl || null, is_original: type === "original", is_advertisement: type === "advertisement" };
+      // Clean raw input into clean strings list
+      const mediaAssets = mediaRaw.split(',').map(url => url.trim()).filter(url => url.length > 0);
+      const payload = { title, excerpt, body, category, source, media_assets: mediaAssets, location_info, content_tag, url: sourceUrl || null, is_original: type === "original", is_advertisement: type === "advertisement" };
 
       let response;
       if (targetId) {
@@ -525,6 +566,7 @@
         clearFormConsole(); 
         document.getElementById('form-submit-btn').innerText = "Commit Entry Changes";
         await synchronizeApplicationState(); 
+        alert("Success! Content published smoothly.");
       } else {
         alert("Save transaction failed: " + response.error.message);
       }
