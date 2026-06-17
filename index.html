@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>B-LOGS — Premium Fashion, Jewelry & Luxury Curation</title>
+  <meta name="description" content="Discover automated trend aggregations and expert design commentary covering custom diamond jewelry, grillz, runway collections, and luxury investments.">
+  <meta name="keywords" content="Luxury Blog, Diamond Grillz, Fine Jewelry, Branded Clothing, Quiet Luxury, Fashion Portfolio">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="B-LOGS — Premium Fashion, Jewelry & Luxury Curation">
+  <meta property="og:description" content="Automated trend aggregations paired with personal design portfolios spanning high-end diamond statement pieces and luxury trends.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1543872084-c7bd3822856f?w=1000">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brandBg: '#F5ECFF', brandAccent: '#660BC3', h1Color: '#1A0A2A', h2Color: '#2D2533', bodyColor: '#4A3E56' },
+          fontFamily: { caslonBold: ['"Libre Caslon Display"', 'serif'], caslonReg: ['"Libre Caslon Text"', 'serif'], satoshi: ['"Lora"', 'sans-serif'], poppins: ['"Poppins"', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_TRACKING_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YOUR_TRACKING_ID', { 'anonymize_ip': true });
+  </script>
+
+  <style>
+    body { background-color: #F5ECFF; color: #4A3E56; padding-bottom: 64px; }
+    @media (min-width: 768px) { body { padding-bottom: 0; } }
+    .custom-scroll::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="min-h-screen font-satoshi selection:bg-brandAccent/20">
+
+  <header class="sticky top-0 z-40 w-full border-b border-brandAccent/10 bg-brandBg/80 backdrop-blur-md px-6 py-5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <h1 onclick="switchGlobalView('home-view')" class="font-caslonBold text-[36px] md:text-[44px] font-[900] text-brandAccent tracking-widest cursor-pointer mx-auto md:mx-0 select-none">
+        B-LOGS
+      </h1>
+      
+      <nav id="desktop-nav" class="hidden md:flex items-center space-x-12 font-caslonReg text-[16px]">
+        <button onclick="switchGlobalView('home-view')" class="nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all">Home Hub</button>
+        <button onclick="switchGlobalView('categories-view')" class="nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">Categories Directory</button>
+        <button onclick="switchGlobalView('portfolio-view')" class="nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">My Portfolio</button>
+        <button id="nav-console-link" onclick="switchGlobalView('admin-view')" class="hidden nav-link text-brandAccent/60 text-[14px] font-poppins px-3 py-1 bg-brandAccent/5 rounded-md font-semibold">Console Panel</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 py-6 pb-24 md:pb-12">
+    
+    <section id="home-view" class="view-panel block">
+      <div id="all-feeds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <section id="categories-view" class="view-panel hidden">
+      <div id="category-selection-menu" class="block">
+        <div class="text-center mb-10"><h2 class="font-caslonBold text-[24px] md:text-[32px] text-h1Color">Select Categories</h2></div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
+          <button onclick="filterCategory('diamond_jewelry', 'Diamond & Jewelry')" class="bg-brandBg p-6 rounded-[24px] flex flex-col items-center space-y-3 transition-all duration-300 group shadow-none border-0 focus:outline-none">
+            <div class="w-10 h-10 rounded-full bg-brandAccent/5 flex items-center justify-center text-brandAccent group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 21l8.954-8.955M21 3.113M12.854 11l5.241-5.241m0 0L21 3m-2.905 2.759L13.854 11m0 0L9 15.854M9 15.854L3 21"></path></svg></div>
+            <span class="font-poppins text-[14px] md:text-[16px] text-h2Color font-medium group-hover:text-brandAccent">Diamond & Jewelry</span>
+          </button>
+          <button onclick="filterCategory('branded_clothing', 'Branded Clothing')" class="bg-brandBg p-6 rounded-[24px] flex flex-col items-center space-y-3 transition-all duration-300 group shadow-none border-0 focus:outline-none">
+            <div class="w-10 h-10 rounded-full bg-brandAccent/5 flex items-center justify-center text-brandAccent group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
+            <span class="font-poppins text-[14px] md:text-[16px] text-h2Color font-medium group-hover:text-brandAccent">Branded Clothing</span>
+          </button>
+          <button onclick="filterCategory('fashion_fame', 'Fashion Fame')" class="bg-brandBg p-6 rounded-[24px] flex flex-col items-center space-y-3 transition-all duration-300 group shadow-none border-0 focus:outline-none">
+            <div class="w-10 h-10 rounded-full bg-brandAccent/5 flex items-center justify-center text-brandAccent group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6v12a3 3 0 105.397-1.628L15 6zm0 0V4a2 2 0 10-4 0v2m-6 4h12m-6 4h6m-6 4h6"></path></svg></div>
+            <span class="font-poppins text-[14px] md:text-[16px] text-h2Color font-medium group-hover:text-brandAccent">Fashion Fame</span>
+          </button>
+          <button onclick="filterCategory('luxury_investment', 'Luxury Investments')" class="bg-brandBg p-6 rounded-[24px] flex flex-col items-center space-y-3 transition-all duration-300 group shadow-none border-0 focus:outline-none">
+            <div class="w-10 h-10 rounded-full bg-brandAccent/5 flex items-center justify-center text-brandAccent group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+            <span class="font-poppins text-[14px] md:text-[16px] text-h2Color font-medium group-hover:text-brandAccent">Luxury Investments</span>
+          </button>
+          <button onclick="filterCategory('affordable_luxury', 'Affordable Luxury')" class="bg-brandBg p-6 rounded-[24px] flex flex-col items-center space-y-3 transition-all duration-300 group shadow-none border-0 focus:outline-none">
+            <div class="w-10 h-10 rounded-full bg-brandAccent/5 flex items-center justify-center text-brandAccent group-hover:scale-110 transition-transform"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg></div>
+            <span class="font-poppins text-[14px] md:text-[16px] text-h2Color font-medium group-hover:text-brandAccent">Affordable Luxury</span>
+          </button>
+        </div>
+      </div>
+      <div id="category-results-panel" class="hidden">
+        <div class="flex items-center space-x-4 border-b border-brandAccent/20 pb-4 mb-8">
+          <button onclick="exitCategoryView()" class="text-brandAccent p-2 rounded-full hover:bg-brandAccent/5 transition-all"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg></button>
+          <h2 id="category-panel-title" class="font-caslonBold text-[24px] md:text-[32px] text-h1Color">Selected Section</h2>
+        </div>
+        <div id="category-feeds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      </div>
+    </section>
+
+    <section id="portfolio-view" class="view-panel hidden">
+      <div id="portfolio-list-wrapper" class="block">
+        <div class="border-b border-brandAccent/10 pb-4 mb-8">
+          <h2 class="font-caslonBold text-[24px] md:text-[32px] text-h1Color">My Original Works</h2>
+          <p class="font-satoshi text-[13.33px] text-bodyColor mt-1">Descriptions, review articles, and showcase materials from the studio archive.</p>
+        </div>
+        <div id="portfolio-grid-target" class="space-y-12"></div>
+      </div>
+      <div id="portfolio-reader-wrapper" class="hidden transition-all duration-500">
+        <button onclick="exitProjectReader()" class="text-brandAccent font-poppins font-medium text-[14px] inline-flex items-center space-x-2 mb-6 hover:translate-x-[-4px] transition-transform"><span>&larr;</span> <span>Back to Portfolio</span></button>
+        <article class="max-w-3xl mx-auto mb-16">
+          <div class="flex items-center justify-between mb-2">
+            <span id="read-project-tag" class="font-poppins text-[13.33px] text-brandAccent font-semibold">Tag</span>
+            <span id="read-project-location" class="font-poppins text-[12px] text-bodyColor/60 font-medium">Location</span>
+          </div>
+          <h2 id="read-project-title" class="font-caslonBold text-[28px] md:text-[40px] text-h1Color leading-tight mb-6">Placeholder Title</h2>
+          <div id="carousel-viewport-container" class="w-full aspect-[16/9] rounded-[24px] overflow-hidden mb-8 relative group">
+            <div id="carousel-track-wrapper" class="w-full h-full flex transition-transform duration-500 ease-in-out"></div>
+            <div id="carousel-indicators-dock" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10"></div>
+          </div>
+          <div id="read-project-body" class="font-satoshi text-[16px] text-h2Color leading-relaxed space-y-6"></div>
+        </article>
+        <div class="border-t border-brandAccent/20 pt-10">
+          <h4 class="font-caslonBold text-[22px] text-h1Color mb-6">Explore Other Original Projects</h4>
+          <div id="more-projects-deck" class="flex gap-6 overflow-x-auto pb-6 custom-scroll snap-x"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin-view" class="view-panel hidden">
+      <div id="admin-form-anchor" class="max-w-4xl mx-auto bg-transparent p-2">
+        <div class="mb-10 pb-4 border-b border-brandAccent/10">
+          <h2 class="font-caslonBold text-[32px] text-h1Color">Studio Production Console</h2>
+          <p class="font-poppins text-[12px] text-brandAccent font-semibold uppercase tracking-wider">Device Whitelisted Authorization Active</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <div class="bg-white p-5 rounded-2xl border border-brandAccent/5"><span class="block font-poppins text-[11px] font-bold text-bodyColor/60 uppercase tracking-wide">Unique Site Opens</span><span id="metric-total-opens" class="font-caslonBold text-[32px] text-brandAccent font-[900]">0</span></div>
+          <div class="bg-white p-5 rounded-2xl border border-brandAccent/5"><span class="block font-poppins text-[11px] font-bold text-bodyColor/60 uppercase tracking-wide">Jewelry Taps</span><span id="metric-jewelry-taps" class="font-caslonBold text-[32px] text-h1Color">0</span></div>
+          <div class="bg-white p-5 rounded-2xl border border-brandAccent/5"><span class="block font-poppins text-[11px] font-bold text-bodyColor/60 uppercase tracking-wide">Clothing Taps</span><span id="metric-clothing-taps" class="font-caslonBold text-[32px] text-h1Color">0</span></div>
+          <div class="bg-white p-5 rounded-2xl border border-brandAccent/5"><span class="block font-poppins text-[11px] font-bold text-bodyColor/60 uppercase tracking-wide">Portfolio Dives</span><span id="metric-portfolio-dives" class="font-caslonBold text-[32px] text-h1Color">0</span></div>
+        </div>
+
+        <form id="article-mutation-form" onsubmit="commitDataMutation(event)" class="space-y-6 mb-12">
+          <input type="hidden" id="mutation-target-id" value="">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Content Layout Mode Layer</label>
+              <select id="input-article-type" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[14px]">
+                <option value="original">Original Portfolio Piece (My Work)</option>
+                <option value="feed">Aggregated Feed Post (Curated Trend Element)</option>
+                <option value="advertisement">Advertisement Banner Node (Promo Banner)</option>
+              </select>
+            </div>
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Category Sector Map</label>
+              <select id="input-article-category" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[14px]">
+                <option value="diamond_jewelry">Diamond & Jewelry</option>
+                <option value="branded_clothing">Branded Clothing</option>
+                <option value="fashion_fame">Fashion Fame</option>
+                <option value="luxury_investment">Luxury Investments</option>
+                <option value="affordable_luxury">Affordable Luxury</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Headline H1 Display Title</label><input type="text" id="input-article-title" required class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-caslonReg text-[18px]" placeholder="Headline Title..."></div>
+          <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Summary H2 Subsection Abstract Context</label><textarea id="input-article-excerpt" required rows="2" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-satoshi text-[14px]" placeholder="Subsection context summary..."></textarea></div>
+          
+          <div class="flex flex-col">
+            <label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Media Assets Array (Pasted URL Links or Local File Picker)</label>
+            <div class="flex flex-col md:flex-row gap-4 items-center w-full">
+              <input type="text" id="input-article-media-urls" required class="flex-1 border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px] w-full" placeholder="image1.jpg, image2.png">
+              <label class="cursor-pointer shrink-0 bg-brandAccent text-brandBg font-poppins text-[12px] font-bold px-5 py-3 rounded-full hover:bg-h1Color transition-all text-center select-none w-full md:w-auto">
+                <span>Upload From Device</span>
+                <input type="file" id="input-file-uploader" multiple accept="image/*,video/*" onchange="processDeviceMediaBucketUpload(this)" class="hidden">
+              </label>
+            </div>
+            <span id="upload-status-indicator" class="font-poppins text-[11px] text-brandAccent font-semibold mt-2 hidden">Processing background file transfer...</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Source Route Link</label><input type="text" id="input-article-source-url" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="https://vogue.com/article"></div>
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Geographic Location Coordinate</label><input type="text" id="input-article-location" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="e.g., Paris, France"></div>
+            <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Metadata Content Tag</label><input type="text" id="input-article-tag" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-poppins text-[13px]" placeholder="e.g., #HauteCouture"></div>
+          </div>
+          <div class="flex flex-col"><label class="font-poppins text-[11px] font-bold text-h1Color uppercase tracking-wider mb-2">Full Core Post Body Description (HTML Supported)</label><textarea id="input-article-body" rows="4" class="border-0 border-b border-brandAccent/20 p-3 bg-white/50 focus:outline-none focus:border-brandAccent font-satoshi text-[15px]" placeholder="Detailed analysis body text paragraphs..."></textarea></div>
+          <div class="pt-4"><button type="submit" id="form-submit-btn" class="bg-[#660BC3] text-[#F5ECFF] font-poppins font-bold text-[14px] px-10 py-3.5 rounded-full shadow-md hover:bg-h1Color transition-all">Commit Entry Changes</button></div>
+        </form>
+
+        <div class="border-t border-brandAccent/10 pt-8">
+          <h4 class="font-caslonBold text-[20px] text-h1Color mb-4">Live Platform Content Inventory</h4>
+          <div id="admin-inventory-list-target" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="md:hidden fixed bottom-0 left-0 right-0 w-full bg-[#660BC3] border-t border-white/10 z-50">
+    <div id="mobile-navbar-container" class="w-full flex items-center justify-between px-2 py-2">
+      
+      <button onclick="triggerMobileNavigation(this, 'home-view')" class="mobile-tab-pill flex flex-col items-center justify-center flex-1 py-1 text-[#F5ECFF] focus:outline-none transition-all duration-200">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
+        <span class="font-poppins text-[10px] tracking-wide font-medium opacity-80">Home</span>
+      </button>
+
+      <button onclick="triggerMobileNavigation(this, 'categories-view')" class="mobile-tab-pill flex flex-col items-center justify-center flex-1 py-1 text-[#F5ECFF] focus:outline-none transition-all duration-200">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+        <span class="font-poppins text-[10px] tracking-wide font-medium opacity-80">Categories</span>
+      </button>
+
+      <button onclick="triggerMobileNavigation(this, 'portfolio-view')" class="mobile-tab-pill flex flex-col items-center justify-center flex-1 py-1 text-[#F5ECFF] focus:outline-none transition-all duration-200">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+        <span class="font-poppins text-[10px] tracking-wide font-medium opacity-80">Portfolio</span>
+      </button>
+
+      <button id="nav-mobile-console-link" onclick="triggerMobileNavigation(this, 'admin-view')" class="hidden mobile-tab-pill flex flex-col items-center justify-center flex-1 py-1 text-[#F5ECFF] focus:outline-none transition-all duration-200">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.493a1.125 1.125 0 01-.27 1.433l-1.008.767a1.123 1.123 0 00-.417 1.015c.004.074.006.148.006.222 0 .074-.002.148-.006.222a1.123 1.123 0 00.417 1.015l1.007.767c.43.328.54.932.27 1.433l-1.296 2.493a1.125 1.125 0 01-1.37.49l-1.216-.456a1.125 1.125 0 00-1.075.124c-.073.044-.146.087-.22.128-.332.183-.582.495-.645.869l-.213 1.28c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281a1.125 1.125 0 00-.646-.87c-.074-.04-.148-.083-.22-.127a1.124 1.124 0 00-1.075-.124l-1.217.456a1.125 1.125 0 01-1.37-.49l-1.296-2.493a1.125 1.125 0 01.27-1.433l1.008-.767a1.124 1.124 0 00.417-1.015c-.004-.074-.006-.148-.006-.222 0-.074.002-.148.006-.222a1.124 1.124 0 00-.417-1.015l-1.007-.767a1.125 1.125 0 01-.27-1.433l1.296-2.493a1.125 1.125 0 011.37-.49l1.216.456c.356.133.751.072 1.076-.124.072-.041.146-.084.218-.128.333-.183.582-.495.646-.869l.214-1.28z" /></svg>
+        <span class="font-poppins text-[10px] tracking-wide font-medium opacity-80">Console</span>
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    // CORE CONNECTION STRINGS SETUP NODE — INJECT YOUR PARAMETERS HERE
+    const SUPABASE_URL = "https://lmdibkzxyxxfmufsphag.supabase.co"; 
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZGlia3p4eXh4Zm11ZnNwaGFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMTEwMzIsImV4cCI6MjA5Mjc4NzAzMn0.DAkFL3RD5sAcbSsM3oFWG0zYqHp-VgzZVp3v3TC3RJI";
+    
+    let _supabase = null; let PLATFORM_STORE = []; let autoCarouselTimer = null; let activeCarouselIndex = 0;
+
+    const FALLBACK_STORE = [
+      { id: "f1", title: "Establishing Live Synchronization Cluster...", excerpt: "Please add your verified configuration connection parameters to turn on full feature data parsing updates.", category: "branded_clothing", source: "System Sync", media_assets: ["https://images.unsplash.com/photo-1543872084-c7bd3822856f?w=800"], is_original: false, is_advertisement: false },
+      { id: "p1", title: "Bespoke Portfolio Creation Work Piece", excerpt: "Your original publications and hand-forged archive listings populate within this viewport panel.", category: "diamond_jewelry", source: "Studio", media_assets: ["https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800"], is_original: true, is_advertisement: false }
+    ];
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      handleGatekeeperHandshakePassphrase();
+      if(!SUPABASE_URL.includes("your-project-id")) {
+        _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        await synchronizeApplicationState();
+        
+        // REFINED INTELLIGENT EXCLUSION ENGINE (Bypasses Admin & Dedupes Page Refreshes)
+        const isAdminDevice = localStorage.getItem('b_logs_device_verified_token') === 'true';
+        const isSessionAlreadyTracked = sessionStorage.getItem('b_logs_session_logged') === 'true';
+        
+        if (!isAdminDevice && !isSessionAlreadyTracked) {
+          logNativeTelemetryEvent('site_open', 'visitor');
+          sessionStorage.setItem('b_logs_session_logged', 'true');
+        }
+      } else {
+        PLATFORM_STORE = FALLBACK_STORE; renderHomeStream(); renderPortfolioListing(); renderInventoryControlList();
+      }
+      const defaultMobileTab = document.querySelectorAll('.mobile-tab-pill')[0];
+      if (defaultMobileTab) triggerMobileNavigation(defaultMobileTab, 'home-view');
+    });
+
+    // PASSKEY VALIDATION GATEKEEPER AUTOMATION HANDSHAKE
+    function handleGatekeeperHandshakePassphrase() {
+      const parsedQueries = new URLSearchParams(window.location.search);
+      const linkingPasskey = parsedQueries.get('gate');
+      
+      if(linkingPasskey === "studio_director_2026") {
+        localStorage.setItem('b_logs_device_verified_token', 'true');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      
+      if(localStorage.getItem('b_logs_device_verified_token') === 'true') {
+        document.getElementById('nav-console-link').classList.remove('hidden');
+        document.getElementById('nav-mobile-console-link').classList.remove('hidden');
+      }
+    }
+
+    // ADVANCED MOBILE GALLERY & PHONE STORAGE INGESTION INTERACTION ENGINE
+    async function processDeviceMediaBucketUpload(inputSource) {
+      if(!_supabase) { alert("Core configuration error: Live database pipeline keys are missing."); return; }
+      const filesList = inputSource.files;
+      if(filesList.length === 0) return;
+
+      const indicator = document.getElementById('upload-status-indicator');
+      indicator.classList.remove('hidden');
+      indicator.className = "font-poppins text-[11px] text-brandAccent font-semibold mt-2";
+      indicator.innerText = `Syncing ${filesList.length} local file(s) into your portfolio bucket storage...`;
+
+      let processedLinks = [];
+      for(let i = 0; i < filesList.length; i++) {
+        const selectedFile = filesList[i];
+        const extension = selectedFile.name.split('.').pop();
+        const uniqueCloudPath = `studio_assets/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${extension}`;
+
+        const { data, error } = await _supabase.storage
+          .from('media-bucket')
+          .upload(uniqueCloudPath, selectedFile, { cacheControl: '31536000', upsert: false });
+
+        if(!error) {
+          const { data: routeObj } = _supabase.storage.from('media-bucket').getPublicUrl(uniqueCloudPath);
+          if(routeObj && routeObj.publicUrl) {
+            processedLinks.push(routeObj.publicUrl);
+          }
+        } else {
+          console.error("Storage upload transaction rejected:", error.message);
+        }
+      }
+
+      const linkInput = document.getElementById('input-article-media-urls');
+      if(processedLinks.length > 0) {
+        const currentFieldText = linkInput.value.trim();
+        linkInput.value = currentFieldText ? `${currentFieldText}, ${processedLinks.join(', ')}` : processedLinks.join(', ');
+        indicator.innerText = `Handshake completed! Appended ${processedLinks.length} web-ready asset paths successfully.`;
+        indicator.className = "font-poppins text-[11px] text-green-600 font-bold mt-2";
+      } else {
+        indicator.innerText = "Upload failed. Verify that your bucket name matches and public permissions are active.";
+        indicator.className = "font-poppins text-[11px] text-red-600 font-bold mt-2";
+      }
+    }
+
+    async function logNativeTelemetryEvent(typeString, targetMeta) {
+      // Exclude Admin device from firing user metrics even on click interactions
+      const isAdminDevice = localStorage.getItem('b_logs_device_verified_token') === 'true';
+      if(!_supabase || isAdminDevice) return;
+      
+      await _supabase.from('site_telemetry').insert([{ event_type: typeString, target_meta: targetMeta }]);
+    }
+
+    async function synchronizeApplicationState() {
+      if(!_supabase) return;
+      const { data } = await _supabase.from('articles').select('*').order('published_at', { ascending: false });
+      if (data) { PLATFORM_STORE = data.length > 0 ? data : FALLBACK_STORE; renderHomeStream(); renderPortfolioListing(); renderInventoryControlList(); fetchLiveTelemetryMetrics(); }
+    }
+
+    async function fetchLiveTelemetryMetrics() {
+      if(!_supabase) return;
+      const { data } = await _supabase.from('site_telemetry').select('event_type, target_meta');
+      if(data) {
+        document.getElementById('metric-total-opens').innerText = data.filter(e => e.event_type === 'site_open').length;
+        document.getElementById('metric-jewelry-taps').innerText = data.filter(e => e.event_type === 'category_tap' && e.target_meta === 'diamond_jewelry').length;
+        document.getElementById('metric-clothing-taps').innerText = data.filter(e => e.event_type === 'category_tap' && e.target_meta === 'branded_clothing').length;
+        document.getElementById('metric-portfolio-dives').innerText = data.filter(e => e.event_type === 'portfolio_deep_dive').length;
+      }
+    }
+
+    function renderHomeStream() {
+      const targetGrid = document.getElementById('all-feeds-grid'); if(!targetGrid) return;
+      const homeItems = PLATFORM_STORE.filter(item => !item.is_original);
+      targetGrid.innerHTML = homeItems.map(item => generateCardMarkup(item)).join('');
+    }
+
+    function generateCardMarkup(item) {
+      const adStyleWrapper = item.is_advertisement ? 'bg-brandAccent/5 relative' : 'bg-brandBg shadow-none';
+      const badgeMarkup = item.is_advertisement ? `<span class="absolute top-4 right-4 bg-brandAccent text-brandBg text-[10px] font-bold tracking-widest uppercase py-1 px-2.5 rounded-md z-10 font-poppins">Sponsor Ad</span>` : '';
+      const categoryLabelMap = { 'diamond_jewelry': 'Fine Jewelry', 'branded_clothing': 'Branded Clothing', 'fashion_fame': 'Fashion Fame', 'luxury_investment': 'Luxury Investments', 'affordable_luxury': 'Affordable Luxury' };
+      
+      return `
+        <article class="${adStyleWrapper} overflow-hidden flex flex-col rounded-[24px] p-2 group animate-fadeIn">
+          ${badgeMarkup}
+          <div class="w-full aspect-[4/3] rounded-[18px] overflow-hidden relative">
+            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="${item.media_assets[0]}" alt="${item.title}" loading="lazy">
+          </div>
+          <div class="pt-4 px-2 flex flex-col flex-grow">
+            <h2 class="font-caslonBold text-[22px] text-h1Color leading-tight mb-2">${item.title}</h2>
+            <p class="font-satoshi text-[13.33px] text-bodyColor leading-relaxed mb-4 flex-grow">${item.excerpt}</p>
+            <div class="flex items-center justify-between border-t border-brandAccent/10 pt-2.5 mt-auto">
+              <span class="font-poppins text-[13.33px] text-brandAccent font-medium">~ ${categoryLabelMap[item.category] || 'Curated'}</span>
+              <span class="font-satoshi text-[12px] text-bodyColor/60">${item.source}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function filterCategory(categoryKey, categoryTitle) {
+      document.getElementById('category-selection-menu').classList.replace('block', 'hidden');
+      const resultsPanel = document.getElementById('category-results-panel');
+      const resultsGrid = document.getElementById('category-feeds-grid');
+      document.getElementById('category-panel-title').innerText = categoryTitle;
+      logNativeTelemetryEvent('category_tap', categoryKey);
+      
+      const matches = PLATFORM_STORE.filter(item => item.category === categoryKey && !item.is_original);
+      resultsGrid.innerHTML = matches.length === 0 
+        ? `<div class="col-span-full py-12 text-center text-bodyColor/60 font-poppins text-[14px]">No live entries found matching this directory track.</div>`
+        : matches.map(item => generateCardMarkup(item)).join('');
+      
+      resultsPanel.classList.replace('hidden', 'block');
+    }
+
+    function exitCategoryView() {
+      document.getElementById('category-results-panel').classList.replace('block', 'hidden');
+      document.getElementById('category-selection-menu').classList.replace('hidden', 'block');
+    }
+
+    function renderPortfolioListing() {
+      const targetGrid = document.getElementById('portfolio-grid-target'); if(!targetGrid) return;
+      const originalWorks = PLATFORM_STORE.filter(item => item.is_original);
+      const categoryLabelMap = { 'diamond_jewelry': 'Fine Jewelry', 'branded_clothing': 'Branded Clothing', 'fashion_fame': 'Fashion Fame', 'luxury_investment': 'Luxury Investments', 'affordable_luxury': 'Affordable Luxury' };
+
+      targetGrid.innerHTML = originalWorks.map(project => `
+        <div class="flex flex-col md:flex-row gap-6 items-start group animate-fadeIn">
+          <div class="w-full md:w-1/3 aspect-[4/3] rounded-[16px] overflow-hidden shadow-none">
+            <img class="w-full h-full object-cover" src="${project.media_assets[0]}" alt="${project.title}">
+          </div>
+          <div class="w-full md:w-2/3">
+            <span class="font-poppins text-[13.33px] text-brandAccent font-medium">~ Original — ${categoryLabelMap[project.category] || 'Studio Piece'}</span>
+            <h3 class="font-caslonBold text-[22px] text-h1Color mt-1 mb-2">${project.title}</h3>
+            <p class="font-satoshi text-[13.33px] text-bodyColor leading-relaxed mb-4">${project.excerpt}</p>
+            <button onclick="openProjectReader('${project.id}')" class="text-brandAccent font-caslonReg font-bold text-[14px] inline-flex items-center space-x-1 border-b border-brandAccent hover:border-transparent transition-all"><span>Explore Project Portfolio</span> <span>&rarr;</span></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openProjectReader(projectId) {
+      if(autoCarouselTimer) clearInterval(autoCarouselTimer);
+      const project = PLATFORM_STORE.find(p => p.id === projectId); if(!project) return;
+      logNativeTelemetryEvent('portfolio_deep_dive', projectId);
+
+      document.getElementById('portfolio-list-wrapper').classList.replace('block', 'hidden');
+      document.getElementById('read-project-tag').innerText = `~ ${project.content_tag || '#Original'}`;
+      document.getElementById('read-project-location').innerText = project.location_info || 'Studio Curation';
+      document.getElementById('read-project-title').innerText = project.title;
+      document.getElementById('read-project-body').innerHTML = project.body || `<p>${project.excerpt}</p>`;
+
+      const track = document.getElementById('carousel-track-wrapper'); const dotsDock = document.getElementById('carousel-indicators-dock');
+      track.innerHTML = project.media_assets.map(url => `<div class="w-full h-full flex-shrink-0"><img class="w-full h-full object-cover" src="${url}"></div>`).join('');
+      dotsDock.innerHTML = project.media_assets.map((_, idx) => `<button onclick="jumpToCarouselFrame(${idx})" class="carousel-dot-node w-2.5 h-2.5 rounded-full bg-white/50 transition-all duration-300"></button>`).join('');
+
+      activeCarouselIndex = 0; updateCarouselDOMPosition();
+      autoCarouselTimer = setInterval(() => { activeCarouselIndex = (activeCarouselIndex + 1) % project.media_assets.length; updateCarouselDOMPosition(); }, 2000);
+
+      const alternatives = PLATFORM_STORE.filter(p => p.is_original && p.id !== projectId);
+      document.getElementById('more-projects-deck').innerHTML = alternatives.map(p => `
+        <div onclick="openProjectReader('${p.id}')" class="min-w-[260px] md:min-w-[300px] bg-brandBg p-4 rounded-[20px] cursor-pointer snap-start flex-shrink-0 group">
+          <div class="w-full h-36 rounded-[14px] overflow-hidden mb-3"><img class="w-full h-full object-cover" src="${p.media_assets[0]}"></div>
+          <h5 class="font-caslonBold text-[16px] text-h1Color line-clamp-2 mt-0.5 group-hover:text-brandAccent">${p.title}</h5>
+        </div>
+      `).join('');
+      document.getElementById('portfolio-reader-wrapper').classList.replace('hidden', 'block'); window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateCarouselDOMPosition() {
+      const track = document.getElementById('carousel-track-wrapper'); if (track) track.style.transform = `translateX(-${activeCarouselIndex * 100}%)`;
+      const dots = document.querySelectorAll('.carousel-dot-node');
+      dots.forEach((dot, idx) => { dot.className = idx === activeCarouselIndex ? "carousel-dot-node w-6 h-2.5 rounded-full bg-brandAccent transition-all duration-300" : "carousel-dot-node w-2.5 h-2.5 rounded-full bg-white/60 transition-all duration-300"; });
+    }
+
+    function exitProjectReader() { if(autoCarouselTimer) clearInterval(autoCarouselTimer); document.getElementById('portfolio-reader-wrapper').classList.replace('block', 'hidden'); document.getElementById('portfolio-list-wrapper').classList.replace('hidden', 'block'); }
+
+    function renderInventoryControlList() {
+      const target = document.getElementById('admin-inventory-list-target'); if(!target) return;
+      target.innerHTML = PLATFORM_STORE.map(item => `
+        <div class="flex items-center justify-between bg-white p-4 rounded-2xl border-0 animate-fadeIn">
+          <div><h5 class="font-poppins font-bold text-[14px] text-h1Color line-clamp-1">${item.title}</h5><span class="text-[11px] font-poppins text-brandAccent bg-brandBg px-2 py-0.5 rounded-md font-medium uppercase tracking-wider">${item.is_original ? 'Original Portfolio' : item.is_advertisement ? 'Ad Banner' : 'Curated Feed'}</span></div>
+          <div class="flex space-x-2 shrink-0">
+            <button onclick="loadItemIntoConsoleForm('${item.id}')" class="text-[12px] font-poppins font-bold text-brandAccent bg-brandBg/40 px-3 py-1 rounded-md hover:bg-brandBg">Edit</button>
+            <button onclick="deleteInventoryItem('${item.id}')" class="text-[12px] font-poppins font-bold text-red-600 bg-red-50 px-3 py-1 rounded-md hover:bg-red-100">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadItemIntoConsoleForm(id) {
+      const item = PLATFORM_STORE.find(i => i.id === id); if(!item) return;
+      
+      // Load selected article data fields securely into the workspace text fields
+      document.getElementById('mutation-target-id').value = item.id;
+      document.getElementById('input-article-title').value = item.title;
+      document.getElementById('input-article-excerpt').value = item.excerpt;
+      document.getElementById('input-article-media-urls').value = item.media_assets.join(', ');
+      document.getElementById('input-article-body').value = item.body || '';
+      document.getElementById('input-article-category').value = item.category;
+      document.getElementById('input-article-location').value = item.location_info || '';
+      document.getElementById('input-article-tag').value = item.content_tag || '';
+      document.getElementById('input-article-source-url').value = item.url || '';
+      
+      const typeSelect = document.getElementById('input-article-type');
+      if (item.is_original) typeSelect.value = "original";
+      else if (item.is_advertisement) typeSelect.value = "advertisement";
+      else typeSelect.value = "feed";
+
+      document.getElementById('form-submit-btn').innerText = "Update Content Entry";
+      document.getElementById('admin-form-anchor').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function deleteInventoryItem(id) {
+      if(!_supabase) return;
+      const confirmState = confirm("Are you sure you want to permanently delete this content item from the production server?");
+      if(!confirmState) return;
+
+      const { error } = await _supabase.from('articles').delete().eq('id', id);
+      if(!error) {
+        await synchronizeApplicationState();
+      } else {
+        alert("Deletion transaction failed: " + error.message);
+      }
+    }
+
+    async function commitDataMutation(event) {
+      event.preventDefault(); if(!_supabase) return;
+      const targetId = document.getElementById('mutation-target-id').value;
+      const title = document.getElementById('input-article-title').value;
+      const excerpt = document.getElementById('input-article-excerpt').value;
+      const mediaRaw = document.getElementById('input-article-media-urls').value;
+      const body = document.getElementById('input-article-body').value;
+      const category = document.getElementById('input-article-category').value;
+      const location_info = document.getElementById('input-article-location').value;
+      const content_tag = document.getElementById('input-article-tag').value;
+      const sourceUrl = document.getElementById('input-article-source-url').value;
+      const type = document.getElementById('input-article-type').value;
+      
+      const mediaAssets = mediaRaw.split(',').map(url => url.trim());
+      const payload = { title, excerpt, body, category, media_assets: mediaAssets, location_info, content_tag, url: sourceUrl || null, is_original: type === "original", is_advertisement: type === "advertisement" };
+
+      let response;
+      if (targetId) {
+        response = await _supabase.from('articles').update(payload).eq('id', targetId);
+      } else {
+        response = await _supabase.from('articles').insert([payload]);
+      }
+
+      if (!response.error) { 
+        clearFormConsole(); 
+        document.getElementById('form-submit-btn').innerText = "Commit Entry Changes";
+        await synchronizeApplicationState(); 
+      } else {
+        alert("Save transaction failed: " + response.error.message);
+      }
+    }
+
+    function clearFormConsole() { document.getElementById('mutation-target-id').value = ""; document.getElementById('article-mutation-form').reset(); document.getElementById('upload-status-indicator').classList.add('hidden'); }
+
+    function switchGlobalView(viewPanelId) {
+      document.querySelectorAll('.view-panel').forEach(panel => { panel.classList.replace('block', 'hidden'); });
+      const selectedPanel = document.getElementById(viewPanelId); if (selectedPanel) selectedPanel.classList.replace('hidden', 'block');
+      if(viewPanelId === 'categories-view') exitCategoryView(); if(viewPanelId === 'portfolio-view') exitProjectReader();
+
+      const menuButtonIndexMap = { 'home-view': 0, 'categories-view': 1, 'portfolio-view': 2, 'admin-view': 3 };
+      const desktopLinks = document.querySelectorAll('#desktop-nav button');
+      desktopLinks.forEach((link, idx) => { link.className = idx === menuButtonIndexMap[viewPanelId] ? "nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all" : "nav-link text-h2Color hover:text-brandAccent pb-1 transition-all"; });
+
+      const allMobileTabs = document.querySelectorAll('.mobile-tab-pill');
+      if (allMobileTabs.length > 0 && window.innerWidth < 768) {
+        const matchingMobileButton = allMobileTabs[menuButtonIndexMap[viewPanelId]];
+        if (matchingMobileButton) syncMobilePillState(matchingMobileButton);
+      }
+    }
+
+    function syncMobilePillState(tabElement) {
+      const allTabs = Array.from(tabElement.parentNode.querySelectorAll('.mobile-tab-pill'));
+      allTabs.forEach(tab => {
+        if (tab === tabElement) {
+          tab.classList.remove('opacity-60', 'font-normal');
+          tab.classList.add('opacity-100', 'font-bold');
+        } else {
+          tab.classList.remove('opacity-100', 'font-bold');
+          tab.classList.add('opacity-60', 'font-normal');
+        }
+      });
+    }
+
+    function triggerMobileNavigation(tabElement, viewPanelId) { syncMobilePillState(tabElement); switchGlobalView(viewPanelId); }
+  </script>
+</body>
+</html>
