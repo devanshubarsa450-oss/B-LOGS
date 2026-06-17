@@ -10,14 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
-    </script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -94,7 +86,7 @@
                     <div class="w-full h-full shrink-0 relative bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1500');">
                         <div class="absolute inset-0 bg-gradient-to-t from-h1Color/90 via-h1Color/20 to-transparent flex items-end p-6 md:p-12">
                             <div class="max-w-xl">
-                                <span class="bg-brandAccent text-brandBg text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full font-poppins">Ad Placement Placement</span>
+                                <span class="bg-brandAccent text-brandBg text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full font-poppins">Ad Placement</span>
                                 <h2 class="text-xl md:text-3xl font-caslon text-white mt-2 font-bold leading-tight">Heritage Craftsmanship & Future Visions Inside Contemporary Ateliers</h2>
                             </div>
                         </div>
@@ -116,7 +108,7 @@
             </div>
 
             <div class="border-b border-brandAccent/10 pb-4 mb-6">
-                <h1 class="text-24 md:text-3xl font-caslon font-[900] text-h1Color">Curated Trends Radar</h1>
+                <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Curated Trends Radar</h1>
                 <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Real-time synchronized streams from global luxury indexes.</p>
             </div>
 
@@ -127,7 +119,7 @@
         <section id="categories-view" class="view-panel hidden">
             <div id="category-selection-menu" class="block animate-fade-in">
                 <div class="border-b border-brandAccent/10 pb-4 mb-8">
-                    <h1 class="text-24 md:text-3xl font-caslon font-[900] text-h1Color">Topic Directories</h1>
+                    <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Topic Directories</h1>
                     <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Select an intent sector layer to refine active trends streams.</p>
                 </div>
 
@@ -158,7 +150,7 @@
             <div id="category-results-panel" class="hidden">
                 <div class="flex items-center justify-between border-b border-brandAccent/10 pb-4 mb-6">
                     <div>
-                        <h1 id="category-panel-title" class="text-24 md:text-3xl font-caslon font-[900] text-h1Color">Filtered Dynamic Target</h1>
+                        <h1 id="category-panel-title" class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Filtered Dynamic Target</h1>
                         <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Refined streaming nodes currently active inside query schema.</p>
                     </div>
                     <button onclick="exitCategoryView()" class="px-4 py-2 border border-brandAccent text-brandAccent text-xs font-semibold font-poppins rounded-full hover:bg-brandAccent hover:text-white transition-all">
@@ -174,7 +166,7 @@
         <section id="portfolio-view" class="view-panel hidden">
             <div id="portfolio-list-wrapper" class="block">
                 <div class="border-b border-brandAccent/10 pb-4 mb-8">
-                    <h1 class="text-24 md:text-3xl font-caslon font-[900] text-h1Color">Original Work & Articles</h1>
+                    <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Original Work & Articles</h1>
                     <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Deep-dive journalism investigations and creative domain assets.</p>
                 </div>
 
@@ -296,12 +288,13 @@
         // =========================================================
         // BLOCK 1: PLUG IN YOUR SECURE LIVE DATABASE CONNECTION KEYS
         // =========================================================
-        const SUPABASE_URL = "https://lmdibkzyxxfrwfsphag.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZGlia3p4eXh4Zm11ZnNwaGFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMTEwMzIsImV4cCI6MjA5Mjc4NzAzMn0.DAkFL3RD5sAcbSsM3oFWG0zYqHp-VgzZVp3v3TC3RJI"; // Replace with your public anon API key string from Project Settings > API
+        const SUPABASE_URL = "https://lmdibkzxyxxfmufsphag.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZGlia3p4eXh4Zm11ZnNwaGFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMTEwMzIsImV4cCI6MjA5Mjc4NzAzMn0.DAkFL3RD5sAcbSsM3oFWG0zYqHp-VgzZVp3v3TC3RJI"; // Put your public anon API string here!
 
-        let supabase = null;
-        if(SUPABASE_ANON_KEY !== "PASTE_YOUR_PUBLIC_ANON_KEY_HERE") {
-            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let dbClient = null;
+        // Fix global reference conflicts so the script never crashes out during load
+        if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY !== "PASTE_YOUR_PUBLIC_ANON_KEY_HERE" && SUPABASE_ANON_KEY.trim() !== "") {
+            dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
         // =========================================================
@@ -328,7 +321,7 @@
         // BLOCK 3: CORE APPLICATION INITIALIZATION RUN LOOP
         // =========================================================
         window.addEventListener('DOMContentLoaded', async () => {
-            // Setup mobile home navigation default markers
+            // Setup mobile home navigation default sliders layout
             const defaultMobilePill = document.querySelectorAll('.mobile-tab-pill')[0];
             if (defaultMobilePill) {
                 activeMobileTabElement = defaultMobilePill;
@@ -346,9 +339,9 @@
         // BLOCK 4: ASYNCHRONOUS CLOUD SYNCHRONIZATION PLATFORM ENGINE
         // =========================================================
         async function loadPlatformDataEngine() {
-            if (supabase) {
+            if (dbClient) {
                 try {
-                    const { data, error } = await supabase
+                    const { data, error } = await dbClient
                         .from('articles')
                         .select('*')
                         .order('published_at', { ascending: false });
@@ -362,10 +355,9 @@
                         return;
                     }
                 } catch (err) {
-                    console.log("Supabase Connection Bypassed: Falling back to Local Mock Store layer.");
+                    console.log("Supabase Client Error. Falling back to local arrays seamlessly.");
                 }
             }
-            // Safeguard state filter: fallback to static array entries if table is empty
             liveArticles = [...FALLBACK_STORE];
             renderArticleCardsGrid(liveArticles);
         }
@@ -381,7 +373,6 @@
             return map[slug] || slug;
         }
 
-        // Safe array parser to isolate and output real media strings safely
         function sanitizeMediaAssetsList(url) {
             if (!url || typeof url !== 'string' || url.trim() === "" || url.toLowerCase() === "serv") {
                 return "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=800";
@@ -389,7 +380,6 @@
             return url;
         }
 
-        // Generate Article markup without borders or bounding outlines
         function generateArticleMarkup(item) {
             return `
                 <article class="flex flex-col bg-transparent group cursor-pointer" onclick="window.open('${item.url || '#'}', '_blank')">
@@ -430,11 +420,9 @@
             if (navigationCollapseTimeout) clearTimeout(navigationCollapseTimeout);
             activeMobileTabElement = clickedElement;
 
-            // Stage 2: Expand and Slide active textual path strings on click
             setMobileSliderState(clickedElement, true);
             switchGlobalView(viewPanelId);
 
-            // Stage 3: The 2-Second Reset back to a collapsed compact layout configuration
             navigationCollapseTimeout = setTimeout(() => {
                 setMobileSliderState(activeMobileTabElement, false);
             }, 2000);
@@ -442,9 +430,11 @@
 
         function setMobileSliderState(tabElement, isExpandedState = false) {
             const parent = document.getElementById('mobile-navbar-container');
+            if (!parent) return;
             const allTabs = Array.from(parent.querySelectorAll('.mobile-tab-pill'));
             const activeIdx = allTabs.indexOf(tabElement);
             const activeSlider = document.getElementById('active-slider');
+            if (!activeSlider || activeIdx === -1) return;
             const segmentPercent = 100 / allTabs.length;
 
             if (isExpandedState) {
@@ -455,7 +445,8 @@
                     const textLabel = tab.querySelector('.tab-text-label');
                     const vectorIcon = tab.querySelector('.nav-icon-vector');
                     if (tab === tabElement) {
-                        tab.classList.replace('text-[#F5ECFF]', 'text-[#660BC3]');
+                        tab.classList.remove('text-[#F5ECFF]');
+                        tab.classList.add('text-[#660BC3]');
                         if (textLabel) textLabel.classList.remove('hidden');
                         if (vectorIcon) vectorIcon.classList.add('scale-95');
                     } else {
@@ -466,7 +457,6 @@
                     }
                 });
             } else {
-                // Collapsed Compact Viewport: highlights inverted appearance indicator
                 activeSlider.style.left = `calc(${activeIdx * segmentPercent}% + ${(segmentPercent / 2) - 14}px)`;
                 activeSlider.style.width = "28px";
 
@@ -477,7 +467,8 @@
                     if (vectorIcon) vectorIcon.classList.remove('scale-95');
 
                     if (tab === tabElement) {
-                        tab.classList.replace('text-[#F5ECFF]', 'text-[#660BC3]');
+                        tab.classList.remove('text-[#F5ECFF]');
+                        tab.classList.add('text-[#660BC3]');
                     } else {
                         tab.classList.remove('text-[#660BC3]');
                         tab.classList.add('text-[#F5ECFF]');
@@ -488,26 +479,28 @@
 
         function switchGlobalView(viewPanelId) {
             document.querySelectorAll('.view-panel').forEach(panel => {
-                panel.classList.replace('block', 'hidden');
+                panel.classList.remove('block');
+                panel.classList.add('hidden');
             });
             const selectedPanel = document.getElementById(viewPanelId);
-            if (selectedPanel) selectedPanel.classList.replace('hidden', 'block');
+            if (selectedPanel) {
+                selectedPanel.classList.remove('hidden');
+                selectedPanel.classList.add('block');
+            }
 
             if (viewPanelId === 'categories-view') exitCategoryView();
             if (viewPanelId === 'portfolio-view') exitProjectReader();
 
-            // Highlight desktop navigation tracking bars
             const menuButtonIndexMap = { 'home-view': 0, 'categories-view': 1, 'portfolio-view': 2, 'admin-view': 3 };
             const desktopLinks = document.querySelectorAll('#desktop-nav button');
             desktopLinks.forEach((link, idx) => {
                 if (idx === menuButtonIndexMap[viewPanelId]) {
-                    if(idx !== 3) link.className = "nav-link text-brandAccent font-bold border-b-2 border-b-2 border-brandAccent pb-1 transition-all";
+                    if(idx !== 3) link.className = "nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all";
                 } else {
                     if(idx !== 3) link.className = "nav-link text-h2Color hover:text-brandAccent pb-1 transition-all";
                 }
             });
 
-            // Sync corresponding mobile button coordinates if triggered from desktop bars
             const mobileTabsList = document.querySelectorAll('.mobile-tab-pill');
             if (mobileTabsList.length > 0 && menuButtonIndexMap[viewPanelId] < 3) {
                 const targetBtn = mobileTabsList[menuButtonIndexMap[viewPanelId]];
@@ -581,7 +574,6 @@
             document.getElementById('read-project-image').src = project.image;
             document.getElementById('read-project-body').innerHTML = project.body;
 
-            // Populate the "Other Projects" side-scrolling list
             const otherProjects = PORTFOLIO_PROJECTS.filter(p => p.id !== projectId);
             const carouselDeck = document.getElementById('more-projects-deck');
             
@@ -606,9 +598,9 @@
         // =========================================================
         function initializeAutoCarouselLoop() {
             setInterval(() => {
-                activeCarouselIndex = (activeCarouselIndex + 1) % 2; // Alternates between 2 slides
+                activeCarouselIndex = (activeCarouselIndex + 1) % 2;
                 setCarouselSlide(activeCarouselIndex);
-            }, 2000); // Transitions precisely every 2000ms
+            }, 2000);
         }
 
         function setCarouselSlide(index) {
@@ -620,10 +612,12 @@
             }
             dots.forEach((dot, idx) => {
                 if (idx === index) {
-                    dot.classList.replace('bg-white/40', 'bg-white');
+                    dot.classList.remove('bg-white/40');
+                    dot.classList.add('bg-white');
                     dot.style.width = '16px';
                 } else {
-                    dot.classList.replace('bg-white', 'bg-white/40');
+                    dot.classList.remove('bg-white');
+                    dot.classList.add('bg-white/40');
                     dot.style.width = '8px';
                 }
             });
@@ -633,19 +627,19 @@
         // BLOCK 9: ACCESS CONTROLS & ADMINISTRATIVE PIPELINE
         // =========================================================
         async function checkAuthenticationStateSession() {
-            if (!supabase) return;
-            const { data: { session } } = await supabase.auth.getSession();
+            if (!dbClient) return;
+            const { data: { session } } = await dbClient.auth.getSession();
             if (session && session.user) {
                 displaySecureFormInterface(session.user);
             }
         }
 
         async function executeGoogleAuthenticationChallenge() {
-            if (!supabase) {
-                alert("Please add your secret API configuration parameters inside Block 1 to trigger secure live database authentications.");
+            if (!dbClient) {
+                alert("Please add your secret API configuration parameters inside Block 1 to trigger secure live database validation handles.");
                 return;
             }
-            const { error } = await supabase.auth.signInWithOAuth({
+            const { error } = await dbClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo: window.location.origin + window.location.pathname }
             });
@@ -659,14 +653,14 @@
         }
 
         async function executeSignOutRequest() {
-            if (supabase) await supabase.auth.signOut();
+            if (dbClient) await dbClient.auth.signOut();
             document.getElementById('admin-dashboard-form').classList.replace('block', 'hidden');
             document.getElementById('admin-auth-gate').classList.replace('hidden', 'block');
         }
 
         async function handleFormSubmissionEvent(event) {
             event.preventDefault();
-            if (!supabase) {
+            if (!dbClient) {
                 alert("Read-Only Live Simulation Mode Active.");
                 return;
             }
@@ -684,7 +678,6 @@
             const isOriginalPiece = document.getElementById('form-is-original').checked;
 
             if (isOriginalPiece) {
-                // If flagged original, push straight into our self-managed portfolio structures
                 PORTFOLIO_PROJECTS.unshift({
                     id: 'custom-' + Date.now(),
                     title: payload.title,
@@ -694,10 +687,10 @@
                     image: sanitizeMediaAssetsList(payload.image_url)
                 });
                 renderPortfolioListing();
-                alert("Original journalism piece successfully attached to local workspace feed!");
+                alert("Original journalism piece successfully attached to portfolio!");
             } else {
-                // Submit straight to live cloud cluster tables
-                const { error } = await supabase.table('articles').insert([payload]);
+                // Corrected to .from() to match standard v2 SDK layout calls
+                const { error } = await dbClient.from('articles').insert([payload]);
                 if (error) {
                     alert(`Database Sync Error: ${error.message}`);
                 } else {
