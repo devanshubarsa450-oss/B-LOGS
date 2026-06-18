@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -16,15 +16,16 @@
             theme: {
                 extend: {
                     colors: {
-                        brandAccent: '#660BC3', // Electric Violet Accent
-                        brandBg: '#F5ECFF',     // Soft Lavender White Canvas
-                        h1Color: '#1A0A2A',     // Deep Luxury Plum-Black
-                        h2Color: '#4A3E56',     // Muted Editorial Charcoal
-                        bodyColor: '#2D2533'    // Off-Black Text Charcoal
+                        brandAccent: '#660BC3', 
+                        brandBg: '#F5ECFF',     
+                        h1Color: '#1A0A2A',     
+                        h2Color: '#4A3E56',     
+                        bodyColor: '#2D2533'    
                     },
                     fontFamily: {
                         caslon: ['"Libre Caslon Display"', 'serif'],
-                        poppins: ['Poppins', 'sans-serif']
+                        poppins: ['Poppins', 'sans-serif'],
+                        playfair: ['"Playfair Display"', 'serif']
                     }
                 }
             }
@@ -32,461 +33,406 @@
     </script>
 
     <style>
-        /* Precision font rendering safeguards for high-density screens */
         h1, .bold-masthead {
             font-weight: 900 !important;
             -webkit-font-smoothing: subpixel-antialiased !important;
             -moz-osx-font-smoothing: auto !important;
             text-rendering: optimizeLegibility !important;
         }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #F5ECFF;
-            color: #2D2533;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: #F5ECFF; color: #2D2533; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .view-panel { transition: opacity 0.3s ease-in-out; }
 
-        /* Hide scrollbars for premium horizontal catalog sliders */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Simple smooth transitions for view panel layers */
-        .view-panel {
-            transition: opacity 0.3s ease-in-out;
-        }
+        .word-fade { opacity: 0; display: inline-block; animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body class="min-h-screen pb-32 md:pb-12 selection:bg-brandAccent selection:text-white">
 
     <header class="w-full bg-brandBg/90 backdrop-blur-md sticky top-0 z-40 border-b border-brandAccent/10 px-6 py-4 md:py-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <a href="#" onclick="switchGlobalView('home-view')" class="text-[32px] md:text-[42px] font-caslon font-[900] tracking-tight text-h1Color transition-transform active:scale-95">
+            <a href="#" onclick="switchGlobalView('home-view')" class="text-[32px] md:text-[42px] font-caslon font-[900] tracking-tight text-brandAccent transition-transform active:scale-95">
                 B-LOGS
             </a>
 
-            <nav id="desktop-nav" class="hidden md:flex items-center gap-8 font-poppins font-medium text-sm">
-                <button onclick="switchGlobalView('home-view')" class="nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all">Home</button>
-                <button onclick="switchGlobalView('categories-view')" class="nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">Categories</button>
-                <button onclick="switchGlobalView('portfolio-view')" class="nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">Portfolio</button>
-                <button onclick="switchGlobalView('admin-view')" class="nav-link px-4 py-2 bg-h1Color text-brandBg text-xs font-semibold rounded hover:bg-brandAccent transition-all shadow-sm">Console Panel</button>
+            <nav id="desktop-nav" class="hidden md:flex items-center gap-8 font-poppins font-medium text-sm uppercase tracking-widest">
+                <button onclick="switchGlobalView('home-view')" class="nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all">Feeds</button>
+                <button onclick="switchGlobalView('categories-view')" class="nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">Topics</button>
+                <button onclick="switchGlobalView('portfolio-view')" class="nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">Products</button>
+                
+                <button id="desktop-admin-btn" onclick="switchGlobalView('admin-view')" class="hidden items-center gap-2 nav-link text-h2Color hover:text-brandAccent pb-1 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Admin
+                </button>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 md:px-8 mt-6">
+    <section id="quote-section" class="max-w-4xl mx-auto px-6 pt-12 pb-8 text-center view-panel block">
+        <div class="mb-4 text-brandAccent text-[10px] font-poppins uppercase tracking-[0.3em] font-bold">Thought of the Day</div>
+        <h2 id="daily-quote-text" class="text-2xl md:text-4xl lg:text-5xl font-playfair text-h1Color leading-snug italic tracking-tight"></h2>
+        <p id="daily-quote-author" class="mt-6 text-xs font-poppins text-h2Color tracking-widest uppercase"></p>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-8 mt-4">
         
         <section id="home-view" class="view-panel block">
-            <div class="w-full relative overflow-hidden bg-h1Color rounded-2xl shadow-xl aspect-[16/9] md:aspect-[21/9] mb-8 group">
+            <div class="w-full relative overflow-hidden bg-h1Color rounded-none shadow-2xl aspect-[16/9] md:aspect-[21/9] mb-12 group">
                 <div id="carousel-wrapper" class="w-full h-full flex transition-transform duration-700 ease-in-out">
-                    <div class="w-full h-full shrink-0 relative bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1500');">
-                        <div class="absolute inset-0 bg-gradient-to-t from-h1Color/90 via-h1Color/20 to-transparent flex items-end p-6 md:p-12">
-                            <div class="max-w-xl">
-                                <span class="bg-brandAccent text-brandBg text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full font-poppins">Ad Placement</span>
-                                <h2 class="text-xl md:text-3xl font-caslon text-white mt-2 font-bold leading-tight">Heritage Craftsmanship & Future Visions Inside Contemporary Ateliers</h2>
-                            </div>
-                        </div>
                     </div>
-                    <div class="w-full h-full shrink-0 relative bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1500');">
-                        <div class="absolute inset-0 bg-gradient-to-t from-h1Color/90 via-h1Color/20 to-transparent flex items-end p-6 md:p-12">
-                            <div class="max-w-xl">
-                                <span class="bg-brandAccent text-brandBg text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full font-poppins">Curated Insight</span>
-                                <h2 class="text-xl md:text-3xl font-caslon text-white mt-2 font-bold leading-tight">Refracting Brilliance: Precision Geometries and Alloy Forging Rules</h2>
-                            </div>
-                        </div>
+                <div id="carousel-dots-container" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-10">
                     </div>
-                </div>
-
-                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
-                    <button onclick="setCarouselSlide(0)" class="carousel-dot w-2 h-2 rounded-full bg-white opacity-100 transition-all"></button>
-                    <button onclick="setCarouselSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-white/40 opacity-100 transition-all"></button>
-                </div>
             </div>
 
-            <div class="border-b border-brandAccent/10 pb-4 mb-6">
-                <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Curated Trends Radar</h1>
-                <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Real-time synchronized streams from global luxury indexes.</p>
+            <div class="border-b border-h1Color/20 pb-4 mb-8">
+                <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color uppercase tracking-widest">The Latest</h1>
             </div>
 
-            <div id="all-feeds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                </div>
+            <div id="all-feeds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"></div>
         </section>
 
         <section id="categories-view" class="view-panel hidden">
             <div id="category-selection-menu" class="block animate-fade-in">
-                <div class="border-b border-brandAccent/10 pb-4 mb-8">
-                    <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Topic Directories</h1>
-                    <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Select an intent sector layer to refine active trends streams.</p>
+                <div class="border-b border-h1Color/20 pb-4 mb-8">
+                    <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color uppercase tracking-widest">Topic Directories</h1>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <button onclick="filterCategory('diamond_jewelry', 'Diamond & Jewelry')" class="flex items-center justify-between p-6 bg-brandBg rounded-xl hover:bg-brandAccent hover:text-white transition-all text-left shadow-sm group">
-                        <span class="font-caslon text-lg font-bold text-h1Color group-hover:text-white transition-colors">Diamond & Jewelry</span>
-                        <span class="text-brandAccent font-poppins font-bold text-sm group-hover:text-white">→</span>
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <button onclick="filterCategory('diamond_jewelry', 'Diamond & Jewelry')" class="flex flex-col items-center justify-center p-8 bg-brandBg border border-brandAccent/10 hover:bg-brandAccent hover:text-white transition-all text-center group h-48">
+                        <svg class="w-8 h-8 mb-4 stroke-brandAccent group-hover:stroke-white transition-colors fill-none" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                        <span class="font-caslon text-lg md:text-xl font-bold text-h1Color group-hover:text-white transition-colors">Diamond & Jewelry</span>
                     </button>
-                    <button onclick="filterCategory('branded_clothing', 'Branded Clothing')" class="flex items-center justify-between p-6 bg-brandBg rounded-xl hover:bg-brandAccent hover:text-white transition-all text-left shadow-sm group">
-                        <span class="font-caslon text-lg font-bold text-h1Color group-hover:text-white transition-colors">Branded Clothing</span>
-                        <span class="text-brandAccent font-poppins font-bold text-sm group-hover:text-white">→</span>
+                    <button onclick="filterCategory('branded_clothing', 'Branded Clothing')" class="flex flex-col items-center justify-center p-8 bg-brandBg border border-brandAccent/10 hover:bg-brandAccent hover:text-white transition-all text-center group h-48">
+                        <svg class="w-8 h-8 mb-4 stroke-brandAccent group-hover:stroke-white transition-colors fill-none" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                        <span class="font-caslon text-lg md:text-xl font-bold text-h1Color group-hover:text-white transition-colors">Branded Clothing</span>
                     </button>
-                    <button onclick="filterCategory('fashion_fame', 'Breaking Into Fashion')" class="flex items-center justify-between p-6 bg-brandBg rounded-xl hover:bg-brandAccent hover:text-white transition-all text-left shadow-sm group">
-                        <span class="font-caslon text-lg font-bold text-h1Color group-hover:text-white transition-colors">Breaking Into Fashion</span>
-                        <span class="text-brandAccent font-poppins font-bold text-sm group-hover:text-white">→</span>
+                    <button onclick="filterCategory('fashion_fame', 'Breaking Into Fashion')" class="flex flex-col items-center justify-center p-8 bg-brandBg border border-brandAccent/10 hover:bg-brandAccent hover:text-white transition-all text-center group h-48">
+                        <svg class="w-8 h-8 mb-4 stroke-brandAccent group-hover:stroke-white transition-colors fill-none" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" /></svg>
+                        <span class="font-caslon text-lg md:text-xl font-bold text-h1Color group-hover:text-white transition-colors">Breaking Into Fashion</span>
                     </button>
-                    <button onclick="filterCategory('luxury_investment', 'Luxury Investments')" class="flex items-center justify-between p-6 bg-brandBg rounded-xl hover:bg-brandAccent hover:text-white transition-all text-left shadow-sm group">
-                        <span class="font-caslon text-lg font-bold text-h1Color group-hover:text-white transition-colors">Luxury Investments</span>
-                        <span class="text-brandAccent font-poppins font-bold text-sm group-hover:text-white">→</span>
+                    <button onclick="filterCategory('luxury_investment', 'Luxury Investments')" class="flex flex-col items-center justify-center p-8 bg-brandBg border border-brandAccent/10 hover:bg-brandAccent hover:text-white transition-all text-center group h-48">
+                        <svg class="w-8 h-8 mb-4 stroke-brandAccent group-hover:stroke-white transition-colors fill-none" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                        <span class="font-caslon text-lg md:text-xl font-bold text-h1Color group-hover:text-white transition-colors">Luxury Investments</span>
                     </button>
-                    <button onclick="filterCategory('affordable_luxury', 'Affordable Luxury')" class="flex items-center justify-between p-6 bg-brandBg rounded-xl hover:bg-brandAccent hover:text-white transition-all text-left shadow-sm group">
-                        <span class="font-caslon text-lg font-bold text-h1Color group-hover:text-white transition-colors">Affordable Luxury</span>
-                        <span class="text-brandAccent font-poppins font-bold text-sm group-hover:text-white">→</span>
+                    <button onclick="filterCategory('affordable_luxury', 'Affordable Luxury')" class="flex flex-col items-center justify-center p-8 bg-brandBg border border-brandAccent/10 hover:bg-brandAccent hover:text-white transition-all text-center group h-48">
+                        <svg class="w-8 h-8 mb-4 stroke-brandAccent group-hover:stroke-white transition-colors fill-none" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>
+                        <span class="font-caslon text-lg md:text-xl font-bold text-h1Color group-hover:text-white transition-colors">Affordable Luxury</span>
+                    </button>
+                    <button onclick="filterCategory('super_cars', 'Super Cars')" class="flex flex-col items-center justify-center p-8 bg-brandBg border border-brandAccent/10 hover:bg-brandAccent hover:text-white transition-all text-center group h-48">
+                        <svg class="w-8 h-8 mb-4 stroke-brandAccent group-hover:stroke-white transition-colors fill-none" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
+                        <span class="font-caslon text-lg md:text-xl font-bold text-h1Color group-hover:text-white transition-colors">Super Cars</span>
                     </button>
                 </div>
             </div>
-
             <div id="category-results-panel" class="hidden">
-                <div class="flex items-center justify-between border-b border-brandAccent/10 pb-4 mb-6">
-                    <div>
-                        <h1 id="category-panel-title" class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Filtered Dynamic Target</h1>
-                        <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Refined streaming nodes currently active inside query schema.</p>
-                    </div>
-                    <button onclick="exitCategoryView()" class="px-4 py-2 border border-brandAccent text-brandAccent text-xs font-semibold font-poppins rounded-full hover:bg-brandAccent hover:text-white transition-all">
-                        ← Back to List
-                    </button>
+                <div class="flex items-center justify-between border-b border-h1Color/20 pb-4 mb-6">
+                    <div><h1 id="category-panel-title" class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color uppercase tracking-widest">Target</h1></div>
+                    <button onclick="exitCategoryView()" class="px-4 py-2 border border-brandAccent text-brandAccent text-xs font-semibold font-poppins rounded-none hover:bg-brandAccent hover:text-white transition-all uppercase tracking-widest">← Back</button>
                 </div>
-
-                <div id="category-feeds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    </div>
+                <div id="category-feeds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"></div>
             </div>
         </section>
 
         <section id="portfolio-view" class="view-panel hidden">
             <div id="portfolio-list-wrapper" class="block">
-                <div class="border-b border-brandAccent/10 pb-4 mb-8">
-                    <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color">Original Work & Articles</h1>
-                    <p class="text-xs md:text-sm font-poppins text-h2Color mt-1">Deep-dive journalism investigations and creative domain assets.</p>
+                <div class="border-b border-h1Color/20 pb-4 mb-8">
+                    <h1 class="text-2xl md:text-3xl font-caslon font-[900] text-h1Color uppercase tracking-widest">Product Portfolio</h1>
                 </div>
-
-                <div id="portfolio-grid-target" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    </div>
+                <div id="portfolio-grid-target" class="grid grid-cols-1 md:grid-cols-2 gap-12"></div>
             </div>
-
-            <div id="portfolio-reader-wrapper" class="hidden max-w-4xl mx-auto bg-brandBg rounded-3xl p-6 md:p-12 shadow-md relative">
-                <button onclick="exitProjectReader()" class="absolute top-6 right-6 px-4 py-2 bg-h1Color text-brandBg text-xs font-semibold rounded-full hover:bg-brandAccent transition-all shadow-md z-10">
-                    ✕ Close Reading
-                </button>
-
+            <div id="portfolio-reader-wrapper" class="hidden max-w-4xl mx-auto bg-brandBg rounded-none border border-brandAccent/10 p-6 md:p-16 shadow-2xl relative">
+                <button onclick="exitProjectReader()" class="absolute top-6 right-6 px-4 py-2 bg-h1Color text-brandBg text-[10px] font-bold rounded-none hover:bg-brandAccent transition-all shadow-md z-10 uppercase tracking-widest">✕ Close</button>
                 <article class="prose max-w-none">
-                    <span id="read-project-tag" class="text-xs font-poppins font-semibold text-brandAccent block tracking-wider mb-2">Original Studio Review</span>
-                    <h1 id="read-project-title" class="text-2xl md:text-4xl font-caslon font-[900] text-h1Color mb-6 leading-tight">Expanded Document Title</h1>
-                    <img id="read-project-image" src="" alt="Feature Graphic" class="w-full object-cover rounded-2xl aspect-[16/9] mb-8 shadow-sm">
-                    <div id="read-project-body" class="font-poppins text-bodyColor text-sm md:text-base leading-relaxed space-y-6">
-                        </div>
+                    <span id="read-project-tag" class="text-[10px] font-poppins font-bold text-brandAccent block tracking-[0.2em] uppercase mb-4">Review</span>
+                    <h1 id="read-project-title" class="text-3xl md:text-5xl font-playfair font-bold text-h1Color mb-8 leading-tight tracking-tight">Expanded Document Title</h1>
+                    <img id="read-project-image" src="" alt="Feature Graphic" class="w-full object-cover rounded-none aspect-[16/9] mb-12 shadow-md">
+                    <div id="read-project-body" class="font-playfair text-bodyColor text-lg md:text-xl leading-relaxed space-y-8"></div>
                 </article>
-
-                <div class="mt-12 pt-8 border-t border-brandAccent/10">
-                    <h3 class="text-lg font-caslon font-bold text-h1Color mb-4">Examine Additional Investigations</h3>
-                    <div id="more-projects-deck" class="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x">
-                        </div>
-                </div>
             </div>
         </section>
 
-        <section id="admin-view" class="view-panel hidden max-w-xl mx-auto bg-brandBg p-6 md:p-8 rounded-2xl shadow-md">
-            <div class="border-b border-brandAccent/10 pb-3 mb-6 text-center">
-                <h2 class="text-xl font-caslon font-bold text-h1Color">Authorized Studio Verification</h2>
-                <p class="text-xs font-poppins text-h2Color">Google Identity Access Gate Framework</p>
+        <section id="admin-view" class="view-panel hidden w-full">
+            <div id="admin-auth-gate" class="block text-center py-12 max-w-md mx-auto">
+                <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-6">Studio Control Vault</h2>
+                <form id="admin-login-form" onsubmit="handleEmailLogin(event)" class="space-y-4">
+                    <input type="email" id="admin-email" placeholder="Email Address" required class="w-full p-4 bg-white border border-brandAccent/20 focus:outline-brandAccent text-sm font-poppins text-bodyColor">
+                    <input type="password" id="admin-pass" placeholder="Password" required class="w-full p-4 bg-white border border-brandAccent/20 focus:outline-brandAccent text-sm font-poppins text-bodyColor">
+                    <button type="submit" class="w-full py-4 bg-h1Color text-white text-xs font-bold font-poppins hover:bg-brandAccent transition-all uppercase tracking-widest mt-4">Authenticate</button>
+                </form>
             </div>
 
-            <div id="admin-auth-gate" class="block text-center py-6">
-                <p class="text-xs font-poppins text-bodyColor mb-6 max-w-xs mx-auto">This panel writes direct content streams and original journalism pieces to the live database node.</p>
-                <button onclick="executeGoogleAuthenticationChallenge()" class="px-6 py-3 bg-brandAccent text-white text-sm font-bold font-poppins rounded-xl hover:bg-h1Color transition-all shadow shadow-brandAccent/20 inline-flex items-center gap-2">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.24 10.285V13.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l2.427-2.334C17.955 2.192 15.34 1 12.24 1 6.133 1 1.143 5.925 1.143 12s4.99 11 11.097 11c6.373 0 10.596-4.414 10.596-10.77 0-.728-.075-1.285-.175-1.945H12.24z"/></svg>
-                    Sign In With Google Auth
-                </button>
-            </div>
-
-            <div id="admin-dashboard-form" class="hidden space-y-4">
-                <div class="flex items-center justify-between bg-brandAccent/10 px-4 py-2 rounded-lg text-xs font-poppins font-medium text-brandAccent">
-                    <span id="admin-user-display">Logged In: admin@b-logs.com</span>
-                    <button onclick="executeSignOutRequest()" class="underline hover:text-h1Color">Sign Out</button>
+            <div id="admin-dashboard-form" class="hidden flex flex-col md:flex-row border border-brandAccent/20 bg-white shadow-xl">
+                <div class="w-full md:w-1/4 bg-brandBg p-6 border-b md:border-b-0 md:border-r border-brandAccent/20 flex flex-col gap-2">
+                    <div class="mb-8">
+                        <span class="block text-xs font-poppins text-h2Color tracking-widest uppercase">Verified Admin</span>
+                        <span id="admin-user-display" class="block font-bold text-brandAccent text-sm truncate">admin@b-logs.com</span>
+                    </div>
+                    <button onclick="switchAdminTab('tab-analytics')" class="admin-menu-btn active text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest bg-brandAccent text-white transition-all">Overview</button>
+                    <button onclick="switchAdminTab('tab-hero')" class="admin-menu-btn text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest text-h2Color hover:bg-brandAccent/10 transition-all">Manage Hero Banners</button>
+                    <button onclick="switchAdminTab('tab-posts')" class="admin-menu-btn text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest text-h2Color hover:bg-brandAccent/10 transition-all">Manage Posts</button>
+                    <button onclick="switchAdminTab('tab-portfolio')" class="admin-menu-btn text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest text-h2Color hover:bg-brandAccent/10 transition-all">Manage Portfolio</button>
+                    <button onclick="switchAdminTab('tab-ads')" class="admin-menu-btn text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest text-h2Color hover:bg-brandAccent/10 transition-all">Manage Ads</button>
+                    <button onclick="switchAdminTab('tab-quotes')" class="admin-menu-btn text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest text-h2Color hover:bg-brandAccent/10 transition-all">Manage Quotes</button>
+                    <button onclick="executeSignOutRequest()" class="mt-auto text-left px-4 py-3 text-xs font-bold font-poppins uppercase tracking-widest text-red-600 hover:bg-red-50 transition-all">Sign Out</button>
                 </div>
 
-                <form id="publication-submission-form" onsubmit="handleFormSubmissionEvent(event)" class="space-y-4 text-xs font-poppins">
-                    <div>
-                        <label class="block text-h2Color font-semibold mb-1">Article Entry Title</label>
-                        <input type="text" id="form-title" required class="w-full p-3 bg-white rounded-lg border border-brandAccent/10 focus:outline-brandAccent text-bodyColor">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-h2Color font-semibold mb-1">Source Label</label>
-                            <input type="text" id="form-source" placeholder="e.g., Vogue, My Atelier" required class="w-full p-3 bg-white rounded-lg border border-brandAccent/10 focus:outline-brandAccent text-bodyColor">
+                <div class="w-full md:w-3/4 p-6 md:p-10 bg-white relative">
+                    
+                    <div id="tab-analytics" class="admin-tab-content block">
+                        <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-8">Platform Analytics</h2>
+                        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div class="p-4 border border-brandAccent/10 bg-brandBg/50 text-center">
+                                <span class="block text-2xl font-playfair font-bold text-brandAccent mb-2">12.4k</span>
+                                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest text-h2Color">Monthly Views</span>
+                            </div>
+                            <div class="p-4 border border-brandAccent/10 bg-brandBg/50 text-center">
+                                <span id="stat-hero" class="block text-2xl font-playfair font-bold text-brandAccent mb-2">0</span>
+                                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest text-h2Color">Hero Banners</span>
+                            </div>
+                            <div class="p-4 border border-brandAccent/10 bg-brandBg/50 text-center">
+                                <span id="stat-posts" class="block text-2xl font-playfair font-bold text-brandAccent mb-2">0</span>
+                                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest text-h2Color">Total Posts</span>
+                            </div>
+                            <div class="p-4 border border-brandAccent/10 bg-brandBg/50 text-center">
+                                <span id="stat-portfolio" class="block text-2xl font-playfair font-bold text-brandAccent mb-2">0</span>
+                                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest text-h2Color">Portfolio Items</span>
+                            </div>
+                            <div class="p-4 border border-brandAccent/10 bg-brandBg/50 text-center">
+                                <span id="stat-ads" class="block text-2xl font-playfair font-bold text-brandAccent mb-2">0</span>
+                                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest text-h2Color">Active Ads</span>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-h2Color font-semibold mb-1">Classification Category</label>
-                            <select id="form-category" class="w-full p-3 bg-white rounded-lg border border-brandAccent/10 focus:outline-brandAccent text-bodyColor font-medium">
-                                <option value="diamond_jewelry">Diamond & Jewelry</option>
-                                <option value="branded_clothing">Branded Clothing</option>
-                                <option value="fashion_fame">Breaking Into Fashion</option>
-                                <option value="luxury_investment">Luxury Investments</option>
-                                <option value="affordable_luxury">Affordable Luxury</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-h2Color font-semibold mb-1">Primary Asset / Cover Image Link</label>
-                        <input type="url" id="form-image" placeholder="https://images.unsplash.com/..." class="w-full p-3 bg-white rounded-lg border border-brandAccent/10 focus:outline-brandAccent text-bodyColor">
-                    </div>
-                    <div>
-                        <label class="block text-h2Color font-semibold mb-1">Body Summary Excerpt</label>
-                        <textarea id="form-summary" rows="3" required class="w-full p-3 bg-white rounded-lg border border-brandAccent/10 focus:outline-brandAccent text-bodyColor leading-relaxed"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-h2Color font-semibold mb-1">Full Article Content (Markdown/HTML for Portfolio)</label>
-                        <textarea id="form-body" rows="5" placeholder="Leave empty if this is an external aggregated stream post node..." class="w-full p-3 bg-white rounded-lg border border-brandAccent/10 focus:outline-brandAccent text-bodyColor leading-relaxed"></textarea>
-                    </div>
-                    <div class="flex items-center gap-3 py-2">
-                        <input type="checkbox" id="form-is-original" class="w-4 h-4 accent-brandAccent">
-                        <label for="form-is-original" class="text-h2Color font-bold cursor-pointer">Flip Switch as Original Publication Piece</label>
                     </div>
 
-                    <button type="submit" class="w-full py-4 bg-brandAccent text-white font-bold text-sm rounded-xl hover:bg-h1Color transition-all shadow-md">
-                        Commit Entry Changes
-                    </button>
-                </form>
+                    <div id="tab-hero" class="admin-tab-content hidden">
+                        <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-4">Hero Banners</h2>
+                        <div class="max-h-64 overflow-y-auto mb-8 border border-brandAccent/10">
+                            <table class="w-full text-left text-xs font-poppins">
+                                <thead class="bg-brandBg text-h2Color uppercase tracking-widest">
+                                    <tr><th class="p-3">Label</th><th class="p-3">Headline</th><th class="p-3 text-right">Actions</th></tr>
+                                </thead>
+                                <tbody id="admin-hero-list" class="divide-y divide-brandAccent/10"></tbody>
+                            </table>
+                        </div>
+                        <div class="bg-brandBg p-6 border border-brandAccent/20">
+                            <h3 id="hero-form-title" class="font-caslon text-lg font-bold text-h1Color uppercase tracking-widest mb-4">Add Hero Banner</h3>
+                            <form id="form-hero" onsubmit="handleHeroSubmit(event)" class="space-y-4 text-xs font-poppins">
+                                <input type="hidden" id="hero-edit-id">
+                                <input type="text" id="hero-pill" placeholder="Small Top Label (e.g. Featured)" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <input type="text" id="hero-headline" placeholder="Main Headline" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <input type="url" id="hero-image" placeholder="Image URL (Unsplash, Supabase Storage, etc)" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <div class="flex gap-4 mt-4">
+                                    <button type="submit" class="flex-1 py-3 bg-brandAccent text-white font-bold uppercase tracking-widest hover:bg-h1Color transition-all">Save Banner</button>
+                                    <button type="button" onclick="resetForm('hero')" class="px-6 py-3 border border-brandAccent text-brandAccent font-bold uppercase tracking-widest hover:bg-white">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="tab-posts" class="admin-tab-content hidden">
+                        <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-4">Content Feed Posts</h2>
+                        <div class="max-h-64 overflow-y-auto mb-8 border border-brandAccent/10">
+                            <table class="w-full text-left text-xs font-poppins">
+                                <thead class="bg-brandBg text-h2Color uppercase tracking-widest">
+                                    <tr><th class="p-3">Title</th><th class="p-3">Category</th><th class="p-3 text-right">Actions</th></tr>
+                                </thead>
+                                <tbody id="admin-posts-list" class="divide-y divide-brandAccent/10"></tbody>
+                            </table>
+                        </div>
+                        <div class="bg-brandBg p-6 border border-brandAccent/20">
+                            <h3 id="post-form-title" class="font-caslon text-lg font-bold text-h1Color uppercase tracking-widest mb-4">Add New Post</h3>
+                            <form id="form-posts" onsubmit="handlePostSubmit(event)" class="space-y-4 text-xs font-poppins">
+                                <input type="hidden" id="post-edit-id">
+                                <input type="text" id="post-title" placeholder="Entry Title" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="text" id="post-source" placeholder="Source Label" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                    <select id="post-category" class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                        <option value="diamond_jewelry">Diamond & Jewelry</option>
+                                        <option value="branded_clothing">Branded Clothing</option>
+                                        <option value="fashion_fame">Breaking Into Fashion</option>
+                                        <option value="luxury_investment">Luxury Investments</option>
+                                        <option value="affordable_luxury">Affordable Luxury</option>
+                                        <option value="super_cars">Super Cars</option>
+                                    </select>
+                                </div>
+                                <input type="url" id="post-image" placeholder="Image URL (Comma separated for Gallery)" class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <textarea id="post-summary" rows="3" placeholder="Summary Excerpt" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent"></textarea>
+                                <div class="flex gap-4 mt-4">
+                                    <button type="submit" class="flex-1 py-3 bg-brandAccent text-white font-bold uppercase tracking-widest hover:bg-h1Color transition-all">Save Post</button>
+                                    <button type="button" onclick="resetForm('posts')" class="px-6 py-3 border border-brandAccent text-brandAccent font-bold uppercase tracking-widest hover:bg-white">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="tab-portfolio" class="admin-tab-content hidden">
+                        <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-4">Portfolio Products</h2>
+                        <div class="max-h-64 overflow-y-auto mb-8 border border-brandAccent/10">
+                            <table class="w-full text-left text-xs font-poppins">
+                                <thead class="bg-brandBg text-h2Color uppercase tracking-widest">
+                                    <tr><th class="p-3">Title</th><th class="p-3">Category</th><th class="p-3 text-right">Actions</th></tr>
+                                </thead>
+                                <tbody id="admin-portfolio-list" class="divide-y divide-brandAccent/10"></tbody>
+                            </table>
+                        </div>
+                        <div class="bg-brandBg p-6 border border-brandAccent/20">
+                            <h3 id="port-form-title" class="font-caslon text-lg font-bold text-h1Color uppercase tracking-widest mb-4">Add Portfolio Item</h3>
+                            <form id="form-portfolio" onsubmit="handlePortfolioSubmit(event)" class="space-y-4 text-xs font-poppins">
+                                <input type="hidden" id="port-edit-id">
+                                <input type="text" id="port-title" placeholder="Project Title" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <input type="text" id="port-cat" placeholder="Custom Label (e.g. Editorial, Studio)" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <input type="url" id="port-image" placeholder="Cover Image URL" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <textarea id="port-excerpt" rows="2" placeholder="Short Excerpt" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent"></textarea>
+                                <textarea id="port-body" rows="4" placeholder="Full HTML Content (Paragraphs, Images)" class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent"></textarea>
+                                <div class="flex gap-4 mt-4">
+                                    <button type="submit" class="flex-1 py-3 bg-brandAccent text-white font-bold uppercase tracking-widest hover:bg-h1Color transition-all">Save Project</button>
+                                    <button type="button" onclick="resetForm('portfolio')" class="px-6 py-3 border border-brandAccent text-brandAccent font-bold uppercase tracking-widest hover:bg-white">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="tab-ads" class="admin-tab-content hidden">
+                        <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-4">Advertisement Banners</h2>
+                        <div class="max-h-64 overflow-y-auto mb-8 border border-brandAccent/10">
+                            <table class="w-full text-left text-xs font-poppins">
+                                <thead class="bg-brandBg text-h2Color uppercase tracking-widest">
+                                    <tr><th class="p-3">Client Label</th><th class="p-3">Headline</th><th class="p-3 text-right">Actions</th></tr>
+                                </thead>
+                                <tbody id="admin-ads-list" class="divide-y divide-brandAccent/10"></tbody>
+                            </table>
+                        </div>
+                        <div class="bg-brandBg p-6 border border-brandAccent/20">
+                            <h3 id="ad-form-title" class="font-caslon text-lg font-bold text-h1Color uppercase tracking-widest mb-4">Add Ad Banner</h3>
+                            <form id="form-ads" onsubmit="handleAdSubmit(event)" class="space-y-4 text-xs font-poppins">
+                                <input type="hidden" id="ad-edit-id">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="text" id="ad-client" placeholder="Top Label (e.g. Partner Feature)" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                    <input type="text" id="ad-btn" placeholder="Button Text (e.g. Explore)" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                </div>
+                                <input type="text" id="ad-title" placeholder="Large Headline" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <input type="url" id="ad-url" placeholder="Destination URL" required class="w-full p-3 border border-brandAccent/20 focus:outline-brandAccent">
+                                <div class="flex gap-4 mt-4">
+                                    <button type="submit" class="flex-1 py-3 bg-brandAccent text-white font-bold uppercase tracking-widest hover:bg-h1Color transition-all">Save Ad</button>
+                                    <button type="button" onclick="resetForm('ads')" class="px-6 py-3 border border-brandAccent text-brandAccent font-bold uppercase tracking-widest hover:bg-white">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="tab-quotes" class="admin-tab-content hidden">
+                        <h2 class="text-2xl font-caslon font-bold text-h1Color tracking-widest uppercase mb-8">Thought of the Day</h2>
+                        <form onsubmit="handleQuoteUpdate(event)" class="space-y-4 text-xs font-poppins p-6 bg-brandBg border border-brandAccent/20">
+                            <textarea id="quote-input" rows="3" placeholder="Enter new editorial quote..." required class="w-full p-4 bg-white border border-brandAccent/20 focus:outline-brandAccent"></textarea>
+                            <input type="text" id="quote-author" placeholder="Author Name" required class="w-full p-4 bg-white border border-brandAccent/20 focus:outline-brandAccent">
+                            <button type="submit" class="w-full py-4 bg-brandAccent text-white font-bold uppercase tracking-widest hover:bg-h1Color transition-all">Broadcast New Quote</button>
+                        </form>
+                    </div>
+
+                </div>
             </div>
         </section>
     </main>
 
-    <div class="fixed bottom-6 left-0 right-0 z-50 px-4 md:hidden flex justify-center">
-        <nav id="mobile-navbar-container" class="w-full max-w-xs bg-[#660BC3] h-[64px] rounded-[32px] shadow-2xl relative flex items-center justify-between px-3 border border-white/10">
+    <div class="fixed bottom-6 left-0 right-0 z-50 px-4 md:hidden flex justify-center pointer-events-none">
+        <nav id="mobile-navbar-container" class="w-full max-w-sm bg-white/95 backdrop-blur-xl h-[64px] rounded-full shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] flex items-center justify-around px-2 border border-brandAccent/10 pointer-events-auto">
             
-            <div id="active-slider" class="absolute h-[44px] bg-[#F5ECFF] rounded-[22px] transition-all duration-300 ease-out z-0" style="left: 12px; width: 84px;"></div>
-
-            <button onclick="handleNavigationState(this, 'home-view', 'Home')" class="mobile-tab-pill relative flex-1 flex items-center justify-center gap-2 text-xs font-poppins font-bold text-[#660BC3] z-10 transition-colors duration-300 h-full">
-                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none transition-transform" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
-                <span class="tab-text-label transition-opacity duration-300">Home</span>
+            <button onclick="handleNavigationState(this, 'home-view')" class="mobile-tab-pill flex flex-col items-center justify-center gap-1 text-brandAccent transition-colors w-16">
+                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest">Feeds</span>
             </button>
 
-            <button onclick="handleNavigationState(this, 'categories-view', 'Categories')" class="mobile-tab-pill relative flex-1 flex items-center justify-center gap-2 text-xs font-poppins font-bold text-[#F5ECFF] z-10 transition-colors duration-300 h-full">
-                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none transition-transform" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-                <span class="tab-text-label hidden transition-opacity duration-300">Categories</span>
+            <button onclick="handleNavigationState(this, 'categories-view')" class="mobile-tab-pill flex flex-col items-center justify-center gap-1 text-[#A098AE] transition-colors w-16">
+                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest">Topics</span>
             </button>
 
-            <button onclick="handleNavigationState(this, 'portfolio-view', 'Portfolio')" class="mobile-tab-pill relative flex-1 flex items-center justify-center gap-2 text-xs font-poppins font-bold text-[#F5ECFF] z-10 transition-colors duration-300 h-full">
-                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none transition-transform" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                <span class="tab-text-label hidden transition-opacity duration-300">Portfolio</span>
+            <button onclick="handleNavigationState(this, 'portfolio-view')" class="mobile-tab-pill flex flex-col items-center justify-center gap-1 text-[#A098AE] transition-colors w-16">
+                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest">Products</span>
             </button>
+            
+            <button id="mobile-admin-btn" onclick="handleNavigationState(this, 'admin-view')" class="hidden flex-col items-center justify-center gap-1 text-[#A098AE] transition-colors w-16 mobile-tab-pill">
+                <svg class="nav-icon-vector w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span class="text-[9px] font-poppins font-bold uppercase tracking-widest">Admin</span>
+            </button>
+
         </nav>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // =========================================================
-        // BLOCK 1: PLUG IN YOUR SECURE LIVE DATABASE CONNECTION KEYS
-        // =========================================================
         const SUPABASE_URL = "https://lmdibkzxyxxfmufsphag.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZGlia3p4eXh4Zm11ZnNwaGFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMTEwMzIsImV4cCI6MjA5Mjc4NzAzMn0.DAkFL3RD5sAcbSsM3oFWG0zYqHp-VgzZVp3v3TC3RJI"; // Put your public anon API string here!
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZGlia3p4eXh4Zm11ZnNwaGFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMTEwMzIsImV4cCI6MjA5Mjc4NzAzMn0.DAkFL3RD5sAcbSsM3oFWG0zYqHp-VgzZVp3v3TC3RJI"; 
 
         let dbClient = null;
-        // Fix global reference conflicts so the script never crashes out during load
-        if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY !== "PASTE_YOUR_PUBLIC_ANON_KEY_HERE" && SUPABASE_ANON_KEY.trim() !== "") {
+        if (typeof supabase !== 'undefined' && SUPABASE_ANON_KEY.trim() !== "") {
             dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // =========================================================
-        // BLOCK 2: IMMUTABLE FALLBACK DATA LAYOUT STORES
-        // =========================================================
-        const FALLBACK_STORE = [
-            { id: 1, source: "vogue.com", title: "Chanel Haute Couture Spring Presentation Matrix Review", summary: "An analysis of cascading asymmetric silhouettes and structured tulle overlays running through the contemporary Grand Palais transformation models.", category: "branded_clothing", categoryLabel: "Branded Clothing", image_url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=800", created_at: new Date().toLocaleDateString() },
-            { id: 2, source: "bof.com", title: "Cartier Unveils Rare Geometric Tension Cushion-Cut Fine Diamond Settings", summary: "Exploring strict structural mechanics and light refraction metrics within modern high-end atelier platinum tension mold casting models.", category: "diamond_jewelry", categoryLabel: "Diamond & Jewelry", image_url: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&q=80&w=800", created_at: new Date().toLocaleDateString() },
-            { id: 3, source: "wwd.com", title: "LVMH Performance Summary: Luxury Asset Resilience Across Global Centers", summary: "Quarterly tracking confirms significant market cap stability driven by high-intent legacy leather goods valuation and premium distribution scaling.", category: "luxury_investment", categoryLabel: "Luxury Investments", image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&q=80&w=800", created_at: new Date().toLocaleDateString() }
-        ];
-
-        const PORTFOLIO_PROJECTS = [
-            { id: "p1", title: "Architectural Geometries inside Contemporary Residential Spaces", excerpt: "A descriptive write-up analyzing texture values, curation mechanics, and pipeline layouts implemented within modern creative domains.", body: "<p>Curation workflows within luxury frameworks require deliberate balancing mechanisms between high-performance engineering platforms and minimal art direction principles.</p><p>This investigation focuses heavily on surface values and structural layout scaling models designed to maximize screen presence while retaining a premium editorial heritage balance.</p><p>By managing custom data indexes directly via Supabase endpoints, we cleanly separate third-party data streams from the primary personal design catalog space.</p>", categoryLabel: "Original Editorial", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000" },
-            { id: "p2", title: "The Craftsmanship of Custom High-End Platinum Setting Collections", excerpt: "An investigation detailing metal forging strategies, casting molds, and stone structural integrity within modern atelier jewelry design.", body: "<p>True haute joaillerie requires a seamless unity between traditional bench techniques and modern structural layout computations.</p><p>This layout review maps out precise tension thresholds for micro-pave systems, tracking how light refracts across varying alloy ratios.</p><p>Our design team ensures that structural components retain low canvas weight metrics without sacrificing visual presentation qualities.</p>", categoryLabel: "Studio Design Review", image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=1000" },
-            { id: "p3", title: "Minimalist Geometry in Luxury Packaging Distribution Systems", excerpt: "Analyzing physical texture profiles and sustainability integration schemas inside premium retail packaging assets.", body: "<p>Unboxing experiences have transformed into critical touchpoints for defining luxury brand identities.</p><p>This technical analysis evaluates the structural physics of rigid board packaging structures, optimizing tactile touch thresholds while maintaining completely zero-carbon footprint metrics.</p>", categoryLabel: "Packaging System Asset", image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&q=80&w=1000" }
-        ];
-
+        // DYNAMIC ARRAYS FOR CRUD
         let liveArticles = [];
+        let PORTFOLIO_PROJECTS = [
+            { id: "p1", title: "Architectural Geometries inside Contemporary Domains", excerpt: "A descriptive write-up analyzing texture values.", body: "<p>Curation workflows within luxury frameworks require deliberate balancing mechanisms.</p>", categoryLabel: "Editorial", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000" },
+            { id: "p2", title: "The Craftsmanship of Custom Platinum Setting Collections", excerpt: "An investigation detailing metal forging strategies.", body: "<p>True haute joaillerie requires a seamless unity.</p>", categoryLabel: "Studio", image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&q=80&w=1000" }
+        ];
+        let liveAds = [
+            { id: "ad1", client: "Partner Feature", title: "Discover The New Collection", btn: "Explore", url: "#" }
+        ];
+        
+        let liveHeroBanners = [
+            { id: "h1", pill: "Ad Placement", headline: "Heritage Craftsmanship & Future Visions Inside Contemporary Ateliers", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1500" },
+            { id: "h2", pill: "Curated Insight", headline: "Refracting Brilliance: Precision Geometries and Alloy Forging Rules", image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1500" }
+        ];
+
         let activeCarouselIndex = 0;
-        let activeMobileTabElement = null;
-        let navigationCollapseTimeout = null;
+        let carouselInterval = null;
 
-        // =========================================================
-        // BLOCK 3: CORE APPLICATION INITIALIZATION RUN LOOP
-        // =========================================================
         window.addEventListener('DOMContentLoaded', async () => {
-            // Setup mobile home navigation default sliders layout
             const defaultMobilePill = document.querySelectorAll('.mobile-tab-pill')[0];
-            if (defaultMobilePill) {
-                activeMobileTabElement = defaultMobilePill;
-                setMobileSliderState(defaultMobilePill, true);
-            }
+            if (defaultMobilePill) setMobileSliderState(defaultMobilePill);
 
-            // Sync data layer and initialize components
+            if(window.location.hash === '#admin') switchGlobalView('admin-view');
+            window.addEventListener('hashchange', () => { if(window.location.hash === '#admin') switchGlobalView('admin-view'); });
+
+            fetchDailyQuote();
+            renderHeroCarousel(); 
             await loadPlatformDataEngine();
             renderPortfolioListing();
-            initializeAutoCarouselLoop();
             checkAuthenticationStateSession();
         });
 
-        // =========================================================
-        // BLOCK 4: ASYNCHRONOUS CLOUD SYNCHRONIZATION PLATFORM ENGINE
-        // =========================================================
-        async function loadPlatformDataEngine() {
-            if (dbClient) {
-                try {
-                    const { data, error } = await dbClient
-                        .from('articles')
-                        .select('*')
-                        .order('published_at', { ascending: false });
-
-                    if (!error && data && data.length > 0) {
-                        liveArticles = data.map(item => ({
-                            ...item,
-                            categoryLabel: formatCategorySlugToTitle(item.category)
-                        }));
-                        renderArticleCardsGrid(liveArticles);
-                        return;
-                    }
-                } catch (err) {
-                    console.log("Supabase Client Error. Falling back to local arrays seamlessly.");
-                }
-            }
-            liveArticles = [...FALLBACK_STORE];
-            renderArticleCardsGrid(liveArticles);
-        }
-
-        function formatCategorySlugToTitle(slug) {
-            const map = {
-                'diamond_jewelry': 'Diamond & Jewelry',
-                'branded_clothing': 'Branded Clothing',
-                'fashion_fame': 'Breaking Into Fashion',
-                'luxury_investment': 'Luxury Investments',
-                'affordable_luxury': 'Affordable Luxury'
-            };
-            return map[slug] || slug;
-        }
-
-        function sanitizeMediaAssetsList(url) {
-            if (!url || typeof url !== 'string' || url.trim() === "" || url.toLowerCase() === "serv") {
-                return "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=800";
-            }
-            return url;
-        }
-
-        function generateArticleMarkup(item) {
-            return `
-                <article class="flex flex-col bg-transparent group cursor-pointer" onclick="window.open('${item.url || '#'}', '_blank')">
-                    <div class="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4 bg-brandAccent/5 relative">
-                        <img src="${sanitizeMediaAssetsList(item.image_url)}" alt="Visual Content Asset" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
-                        <span class="absolute bottom-3 left-3 bg-[#F5ECFF]/90 backdrop-blur-md px-3 py-1 text-[11px] font-medium font-poppins text-brandAccent rounded-full tracking-normal">
-                            ${item.categoryLabel}
-                        </span>
-                    </div>
-                    <div class="flex flex-col flex-1 px-1">
-                        <h2 class="font-caslon text-lg font-bold text-h1Color tracking-tight leading-snug group-hover:text-brandAccent transition-colors mb-2">
-                            ${item.title}
-                        </h2>
-                        <p class="font-poppins text-xs text-h2Color leading-relaxed mb-3 flex-1 line-clamp-3">
-                            ${item.summary || 'No overview summary returned from database structure context layers.'}
-                        </p>
-                        <div class="flex items-center gap-2 text-[10px] font-poppins text-h2Color tracking-tight opacity-80 uppercase">
-                            <span>${item.source || 'radar.hub'}</span>
-                            <span>•</span>
-                            <span>${item.created_at ? new Date(item.created_at).toLocaleDateString() : new Date().toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                </article>
-            `;
-        }
-
-        function renderArticleCardsGrid(articlesList) {
-            const target = document.getElementById('all-feeds-grid');
-            if (target) {
-                target.innerHTML = articlesList.map(item => generateArticleMarkup(item)).join('');
-            }
-        }
-
-        // =========================================================
-        // BLOCK 5: MOBILE SLIDER DYNAMIC SECTOR MANAGER
-        // =========================================================
-        function handleNavigationState(clickedElement, viewPanelId, labelString) {
-            if (navigationCollapseTimeout) clearTimeout(navigationCollapseTimeout);
-            activeMobileTabElement = clickedElement;
-
-            setMobileSliderState(clickedElement, true);
+        // ==========================================
+        // UI & DYNAMIC NAVIGATION STATE
+        // ==========================================
+        function handleNavigationState(clickedElement, viewPanelId) {
+            setMobileSliderState(clickedElement);
             switchGlobalView(viewPanelId);
-
-            navigationCollapseTimeout = setTimeout(() => {
-                setMobileSliderState(activeMobileTabElement, false);
-            }, 2000);
         }
 
-        function setMobileSliderState(tabElement, isExpandedState = false) {
+        function setMobileSliderState(tabElement) {
             const parent = document.getElementById('mobile-navbar-container');
             if (!parent) return;
             const allTabs = Array.from(parent.querySelectorAll('.mobile-tab-pill'));
-            const activeIdx = allTabs.indexOf(tabElement);
-            const activeSlider = document.getElementById('active-slider');
-            if (!activeSlider || activeIdx === -1) return;
-            const segmentPercent = 100 / allTabs.length;
 
-            if (isExpandedState) {
-                activeSlider.style.left = `calc(${activeIdx * segmentPercent}% + 6px)`;
-                activeSlider.style.width = `calc(${segmentPercent}% - 12px)`;
-
-                allTabs.forEach(tab => {
-                    const textLabel = tab.querySelector('.tab-text-label');
-                    const vectorIcon = tab.querySelector('.nav-icon-vector');
-                    if (tab === tabElement) {
-                        tab.classList.remove('text-[#F5ECFF]');
-                        tab.classList.add('text-[#660BC3]');
-                        if (textLabel) textLabel.classList.remove('hidden');
-                        if (vectorIcon) vectorIcon.classList.add('scale-95');
-                    } else {
-                        tab.classList.remove('text-[#660BC3]');
-                        tab.classList.add('text-[#F5ECFF]');
-                        if (textLabel) textLabel.classList.add('hidden');
-                        if (vectorIcon) vectorIcon.classList.remove('scale-95');
-                    }
-                });
-            } else {
-                activeSlider.style.left = `calc(${activeIdx * segmentPercent}% + ${(segmentPercent / 2) - 14}px)`;
-                activeSlider.style.width = "28px";
-
-                allTabs.forEach(tab => {
-                    const textLabel = tab.querySelector('.tab-text-label');
-                    const vectorIcon = tab.querySelector('.nav-icon-vector');
-                    if (textLabel) textLabel.classList.add('hidden');
-                    if (vectorIcon) vectorIcon.classList.remove('scale-95');
-
-                    if (tab === tabElement) {
-                        tab.classList.remove('text-[#F5ECFF]');
-                        tab.classList.add('text-[#660BC3]');
-                    } else {
-                        tab.classList.remove('text-[#660BC3]');
-                        tab.classList.add('text-[#F5ECFF]');
-                    }
-                });
-            }
+            allTabs.forEach(tab => {
+                if (tab === tabElement) {
+                    tab.classList.remove('text-[#A098AE]'); 
+                    tab.classList.add('text-brandAccent');
+                } else {
+                    tab.classList.remove('text-brandAccent'); 
+                    tab.classList.add('text-[#A098AE]');
+                }
+            });
         }
 
         function switchGlobalView(viewPanelId) {
-            document.querySelectorAll('.view-panel').forEach(panel => {
-                panel.classList.remove('block');
-                panel.classList.add('hidden');
-            });
+            document.querySelectorAll('.view-panel').forEach(panel => { panel.classList.add('hidden'); });
             const selectedPanel = document.getElementById(viewPanelId);
-            if (selectedPanel) {
-                selectedPanel.classList.remove('hidden');
-                selectedPanel.classList.add('block');
-            }
+            if (selectedPanel) selectedPanel.classList.remove('hidden'); 
 
             if (viewPanelId === 'categories-view') exitCategoryView();
             if (viewPanelId === 'portfolio-view') exitProjectReader();
@@ -495,212 +441,421 @@
             const desktopLinks = document.querySelectorAll('#desktop-nav button');
             desktopLinks.forEach((link, idx) => {
                 if (idx === menuButtonIndexMap[viewPanelId]) {
-                    if(idx !== 3) link.className = "nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all";
+                    link.className = "nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all" + (idx===3 && !link.classList.contains('hidden') ? " flex items-center gap-2" : "");
                 } else {
-                    if(idx !== 3) link.className = "nav-link text-h2Color hover:text-brandAccent pb-1 transition-all";
+                    link.className = "nav-link text-h2Color hover:text-brandAccent pb-1 transition-all" + (idx===3 && !link.classList.contains('hidden') ? " flex items-center gap-2" : "");
                 }
             });
-
-            const mobileTabsList = document.querySelectorAll('.mobile-tab-pill');
-            if (mobileTabsList.length > 0 && menuButtonIndexMap[viewPanelId] < 3) {
-                const targetBtn = mobileTabsList[menuButtonIndexMap[viewPanelId]];
-                activeMobileTabElement = targetBtn;
-                setMobileSliderState(targetBtn, false);
-            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // =========================================================
-        // BLOCK 6: DYNAMIC CATEGORY ELEMENT CONTROLLERS
-        // =========================================================
-        function filterCategory(categoryKey, categoryTitle) {
-            document.getElementById('category-selection-menu').classList.replace('block', 'hidden');
-            const resultsPanel = document.getElementById('category-results-panel');
-            const resultsGrid = document.getElementById('category-feeds-grid');
-            document.getElementById('category-panel-title').innerText = categoryTitle;
+        // ==========================================
+        // DYNAMIC HERO CAROUSEL LOGIC
+        // ==========================================
+        function renderHeroCarousel() {
+            const wrapper = document.getElementById('carousel-wrapper');
+            const dotsContainer = document.getElementById('carousel-dots-container');
+            if(!wrapper || !dotsContainer) return;
 
-            const matches = liveArticles.filter(item => item.category === categoryKey);
-            
-            if (matches.length === 0) {
-                resultsGrid.innerHTML = `
-                    <div class="col-span-full py-12 text-center text-xs font-poppins text-h2Color opacity-70">
-                        No active structural trends rows found inside this database sector layer.
+            wrapper.innerHTML = liveHeroBanners.map(h => `
+                <div class="w-full h-full shrink-0 relative bg-cover bg-center" style="background-image: url('${h.image}');">
+                    <div class="absolute inset-0 bg-gradient-to-t from-h1Color/90 via-h1Color/20 to-transparent flex items-end p-6 md:p-12">
+                        <div class="max-w-xl">
+                            <span class="bg-brandAccent text-brandBg text-[10px] font-bold uppercase tracking-widest px-3 py-1 font-poppins">${h.pill}</span>
+                            <h2 class="text-2xl md:text-4xl font-caslon text-white mt-3 font-bold leading-tight">${h.headline}</h2>
+                        </div>
                     </div>
-                `;
-            } else {
-                resultsGrid.innerHTML = matches.map(item => generateArticleMarkup(item)).join('');
+                </div>
+            `).join('');
+
+            dotsContainer.innerHTML = liveHeroBanners.map((_, i) => `
+                <button onclick="setCarouselSlide(${i})" class="carousel-dot h-3 rounded-full transition-all ${i===0 ? 'w-6 bg-white' : 'w-3 bg-white/40'}"></button>
+            `).join('');
+            
+            initializeAutoCarouselLoop();
+            setCarouselSlide(0);
+            refreshAdminStats();
+            renderAdminHeroList();
+        }
+
+        function initializeAutoCarouselLoop() {
+            if(carouselInterval) clearInterval(carouselInterval);
+            carouselInterval = setInterval(() => { 
+                if(liveHeroBanners.length > 0) {
+                    activeCarouselIndex = (activeCarouselIndex + 1) % liveHeroBanners.length; 
+                    setCarouselSlide(activeCarouselIndex); 
+                }
+            }, 3000);
+        }
+
+        function setCarouselSlide(index) {
+            if(liveHeroBanners.length === 0) return;
+            activeCarouselIndex = index; 
+            const wrapper = document.getElementById('carousel-wrapper');
+            if (wrapper) wrapper.style.transform = `translateX(-${index * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
+                if (idx === index) { dot.classList.replace('bg-white/40', 'bg-white'); dot.style.width = '24px'; } 
+                else { dot.classList.replace('bg-white', 'bg-white/40'); dot.style.width = '12px'; }
+            });
+        }
+
+        // ==========================================
+        // FEED RENDERING & MULTI-IMAGE GALLERY
+        // ==========================================
+        async function loadPlatformDataEngine() {
+            if (dbClient) {
+                const { data, error } = await dbClient.from('articles').select('*').order('published_at', { ascending: false });
+                if (!error && data) {
+                    liveArticles = data.map(item => ({ ...item, categoryLabel: formatCategorySlugToTitle(item.category) }));
+                }
             }
-            resultsPanel.classList.replace('hidden', 'block');
+            renderArticleCardsGrid(liveArticles);
+            refreshAdminStats();
+            renderAdminPostsList();
         }
 
-        function exitCategoryView() {
-            document.getElementById('category-results-panel').classList.replace('block', 'hidden');
-            document.getElementById('category-selection-menu').classList.replace('hidden', 'block');
+        function formatCategorySlugToTitle(slug) {
+            const map = { 'diamond_jewelry': 'Diamond & Jewelry', 'branded_clothing': 'Branded Clothing', 'fashion_fame': 'Breaking Into Fashion', 'luxury_investment': 'Luxury Investments', 'affordable_luxury': 'Affordable Luxury', 'super_cars': 'Super Cars' };
+            return map[slug] || slug;
         }
 
-        // =========================================================
-        // BLOCK 7: JOURNALISM PORTFOLIO VIEWS CONTROLLER
-        // =========================================================
+        function generateArticleMarkup(item, index) {
+            let rawImageUrl = item.image_url;
+            if (!rawImageUrl || rawImageUrl.trim() === '' || rawImageUrl === 'null' || rawImageUrl === 'undefined') {
+                const premiumFallbacks = ['https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800', 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800', 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=800'];
+                rawImageUrl = premiumFallbacks[(index || 0) % premiumFallbacks.length];
+            }
+            const imageUrls = rawImageUrl.split(',').map(url => url.trim());
+            let imagesHtml = '';
+
+            if (imageUrls.length > 1) {
+                let slides = imageUrls.map(url => `<img src="${url}" alt="Asset" class="w-full h-full object-cover shrink-0 snap-center" loading="lazy">`).join('');
+                imagesHtml = `<div class="w-full h-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar relative">${slides}</div><div class="absolute top-4 right-4 bg-h1Color/90 text-white px-2 py-1 text-[8px] font-bold tracking-widest uppercase shadow-md z-20 pointer-events-none">Gallery (${imageUrls.length})</div>`;
+            } else {
+                imagesHtml = `<img src="${imageUrls[0]}" alt="Asset" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">`;
+            }
+
+            return `
+                <article class="flex flex-col bg-transparent group cursor-pointer">
+                    <div class="w-full aspect-[4/3] rounded-none overflow-hidden mb-6 bg-brandAccent/5 relative border border-brandAccent/5" onclick="window.open('${item.url || '#'}', '_blank')">
+                        ${imagesHtml}
+                        <span class="absolute top-4 left-4 bg-white px-3 py-1 text-[9px] font-bold font-poppins text-h1Color uppercase tracking-widest border border-brandAccent/10 z-20 pointer-events-none">${item.categoryLabel}</span>
+                    </div>
+                    <div class="flex flex-col flex-1 px-1" onclick="window.open('${item.url || '#'}', '_blank')">
+                        <h2 class="font-caslon text-xl font-bold text-h1Color tracking-tight leading-snug group-hover:text-brandAccent transition-colors mb-3">${item.title}</h2>
+                        <p class="font-playfair text-sm text-h2Color leading-relaxed mb-4 flex-1 line-clamp-3">${item.summary || item.excerpt || ''}</p>
+                        <div class="flex items-center gap-2 text-[9px] font-poppins text-h2Color tracking-widest uppercase font-bold">
+                            <span>${item.source || 'radar.hub'}</span><span>•</span><span>${item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}</span>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderArticleCardsGrid(articlesList) {
+            const target = document.getElementById('all-feeds-grid');
+            if (!target) return;
+            let htmlPayload = '';
+            articlesList.forEach((item, index) => {
+                htmlPayload += generateArticleMarkup(item, index);
+                
+                // DYNAMIC AD INJECTION
+                if ((index + 1) % 5 === 0 && liveAds.length > 0) {
+                    let ad = liveAds[Math.floor(index / 5) % liveAds.length];
+                    htmlPayload += `
+                    <div class="col-span-full w-full bg-[#1A0A2A] text-white p-12 flex flex-col items-center justify-center text-center my-4 cursor-pointer" onclick="window.open('${ad.url}', '_blank')">
+                        <span class="text-[9px] font-poppins font-bold text-brandAccent uppercase tracking-[0.3em] mb-4">${ad.client}</span>
+                        <h3 class="font-playfair text-3xl md:text-4xl italic tracking-tight mb-6">${ad.title}</h3>
+                        <button class="px-8 py-3 border border-white/20 text-xs font-poppins uppercase tracking-widest hover:bg-white hover:text-h1Color transition-colors">${ad.btn}</button>
+                    </div>`;
+                }
+            });
+            target.innerHTML = htmlPayload;
+        }
+
+        // ==========================================
+        // QUOTE, PORTFOLIO & CATEGORY LOGIC
+        // ==========================================
+        async function fetchDailyQuote() {
+            let quote = "Luxury is attention to detail, originality, exclusivity and above all quality.";
+            let author = "Angelo Donghia";
+            if (dbClient) {
+                const { data } = await dbClient.from('daily_quotes').select('*').order('id', { ascending: false }).limit(1);
+                if (data && data.length > 0) { quote = data[0].quote_text; author = data[0].author; }
+            }
+            animateQuoteText(quote, author);
+        }
+
+        function animateQuoteText(text, author) {
+            const tC = document.getElementById('daily-quote-text'); const aC = document.getElementById('daily-quote-author');
+            tC.innerHTML = '';
+            text.split(' ').forEach((word, idx) => {
+                const span = document.createElement('span'); span.className = 'word-fade mr-2 md:mr-3';
+                span.style.animationDelay = `${idx * 0.12}s`; span.innerText = word; tC.appendChild(span);
+            });
+            aC.innerText = `— ${author}`; aC.style.animationDelay = `${text.split(' ').length * 0.12 + 0.3}s`;
+            aC.className = 'word-fade mt-8 text-xs font-poppins text-brandAccent tracking-[0.3em] uppercase font-bold';
+        }
+
+        async function handleQuoteUpdate(e) {
+            e.preventDefault();
+            const text = document.getElementById('quote-input').value; 
+            const author = document.getElementById('quote-author').value;
+            if(dbClient) {
+                const { error } = await dbClient.from('daily_quotes').insert([{ quote_text: text, author: author }]);
+                if(error) { 
+                    alert("Database Error: " + error.message); 
+                } else { 
+                    alert("Quote Broadcasted!"); 
+                    fetchDailyQuote(); 
+                    document.getElementById('quote-input').value = ''; 
+                    document.getElementById('quote-author').value = '';
+                }
+            }
+        }
+
+        function filterCategory(categoryKey, categoryTitle) {
+            document.getElementById('category-selection-menu').classList.add('hidden');
+            const resultsPanel = document.getElementById('category-results-panel');
+            document.getElementById('category-panel-title').innerText = categoryTitle;
+            const matches = liveArticles.filter(item => item.category === categoryKey);
+            const resultsGrid = document.getElementById('category-feeds-grid');
+            resultsGrid.innerHTML = matches.length === 0 ? `<div class="col-span-full py-12 text-center text-xs font-poppins uppercase tracking-widest text-h2Color">No streams found.</div>` : matches.map((item, idx) => generateArticleMarkup(item, idx)).join('');
+            resultsPanel.classList.remove('hidden');
+        }
+        function exitCategoryView() { document.getElementById('category-results-panel').classList.add('hidden'); document.getElementById('category-selection-menu').classList.remove('hidden'); }
+
         function renderPortfolioListing() {
             const target = document.getElementById('portfolio-grid-target');
             if (target) {
                 target.innerHTML = PORTFOLIO_PROJECTS.map(project => `
-                    <div class="flex flex-col bg-brandBg rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
-                        <div class="w-full aspect-[16/10] overflow-hidden bg-brandAccent/5">
-                            <img src="${project.image}" alt="Case Asset" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102">
+                    <div class="flex flex-col bg-brandBg rounded-none border border-brandAccent/10 group cursor-pointer" onclick="openProjectReader('${project.id}')">
+                        <div class="w-full aspect-[16/10] overflow-hidden bg-brandAccent/5"><img src="${project.image}" alt="Case Asset" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"></div>
+                        <div class="p-8 flex flex-col flex-1">
+                            <span class="text-[9px] font-poppins font-bold text-brandAccent uppercase tracking-widest mb-3">${project.categoryLabel}</span>
+                            <h2 class="font-caslon text-2xl font-bold text-h1Color leading-tight mb-4 group-hover:text-brandAccent transition-colors">${project.title}</h2>
+                            <p class="font-playfair text-sm text-h2Color leading-relaxed mb-6 flex-1">${project.excerpt}</p>
                         </div>
-                        <div class="p-6 flex flex-col flex-1">
-                            <span class="text-[11px] font-poppins font-medium text-brandAccent uppercase tracking-wider mb-2">${project.categoryLabel}</span>
-                            <h2 class="font-caslon text-xl font-bold text-h1Color leading-tight mb-3">${project.title}</h2>
-                            <p class="font-poppins text-xs text-bodyColor leading-relaxed mb-6 flex-1">${project.excerpt}</p>
-                            <button onclick="openProjectReader('${project.id}')" class="w-full py-3 bg-h1Color text-brandBg text-xs font-medium font-poppins rounded-xl hover:bg-brandAccent transition-all text-center">
-                                Explore Project →
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                    </div>`).join('');
             }
+            refreshAdminStats(); renderAdminPortfolioList();
         }
-
-        function openProjectReader(projectId) {
-            const project = PORTFOLIO_PROJECTS.find(p => p.id === projectId);
-            if (!project) return;
-
-            document.getElementById('portfolio-list-wrapper').classList.replace('block', 'hidden');
-            const reader = document.getElementById('portfolio-reader-wrapper');
-
-            document.getElementById('read-project-tag').innerText = project.categoryLabel;
-            document.getElementById('read-project-title').innerText = project.title;
-            document.getElementById('read-project-image').src = project.image;
-            document.getElementById('read-project-body').innerHTML = project.body;
-
-            const otherProjects = PORTFOLIO_PROJECTS.filter(p => p.id !== projectId);
-            const carouselDeck = document.getElementById('more-projects-deck');
-            
-            carouselDeck.innerHTML = otherProjects.map(p => `
-                <div onclick="openProjectReader('${p.id}')" class="min-w-[260px] md:min-w-[320px] bg-white p-4 rounded-xl shadow-sm cursor-pointer snap-start shrink-0 hover:border-brandAccent border border-transparent transition-all">
-                    <span class="text-[10px] font-poppins font-bold text-brandAccent block mb-1 uppercase">${p.categoryLabel}</span>
-                    <h4 class="font-caslon font-bold text-sm text-h1Color line-clamp-2 leading-snug">${p.title}</h4>
-                </div>
-            `).join('');
-
-            reader.classList.replace('hidden', 'block');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function openProjectReader(id) {
+            const p = PORTFOLIO_PROJECTS.find(p => p.id === id); if(!p) return;
+            document.getElementById('portfolio-list-wrapper').classList.add('hidden');
+            document.getElementById('read-project-tag').innerText = p.categoryLabel; document.getElementById('read-project-title').innerText = p.title;
+            document.getElementById('read-project-image').src = p.image; document.getElementById('read-project-body').innerHTML = p.body;
+            document.getElementById('portfolio-reader-wrapper').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        function exitProjectReader() { document.getElementById('portfolio-reader-wrapper').classList.add('hidden'); document.getElementById('portfolio-list-wrapper').classList.remove('hidden'); }
 
-        function exitProjectReader() {
-            document.getElementById('portfolio-reader-wrapper').classList.replace('block', 'hidden');
-            document.getElementById('portfolio-list-wrapper').classList.replace('hidden', 'block');
-        }
 
-        // =========================================================
-        // BLOCK 8: DYNAMIC INTERACTIVE AUTOMATED CAROUSEL
-        // =========================================================
-        function initializeAutoCarouselLoop() {
-            setInterval(() => {
-                activeCarouselIndex = (activeCarouselIndex + 1) % 2;
-                setCarouselSlide(activeCarouselIndex);
-            }, 2000);
-        }
-
-        function setCarouselSlide(index) {
-            activeCarouselIndex = index;
-            const wrapper = document.getElementById('carousel-wrapper');
-            const dots = document.querySelectorAll('.carousel-dot');
-            if (wrapper) {
-                wrapper.style.transform = `translateX(-${index * 100}%)`;
-            }
-            dots.forEach((dot, idx) => {
-                if (idx === index) {
-                    dot.classList.remove('bg-white/40');
-                    dot.classList.add('bg-white');
-                    dot.style.width = '16px';
-                } else {
-                    dot.classList.remove('bg-white');
-                    dot.classList.add('bg-white/40');
-                    dot.style.width = '8px';
-                }
-            });
-        }
-
-        // =========================================================
-        // BLOCK 9: ACCESS CONTROLS & ADMINISTRATIVE PIPELINE
-        // =========================================================
+        // ==========================================
+        // ADMIN DASHBOARD & SECURE SEPARATION
+        // ==========================================
         async function checkAuthenticationStateSession() {
             if (!dbClient) return;
             const { data: { session } } = await dbClient.auth.getSession();
             if (session && session.user) {
-                displaySecureFormInterface(session.user);
+                document.getElementById('admin-auth-gate').classList.add('hidden');
+                document.getElementById('admin-dashboard-form').classList.remove('hidden');
+                document.getElementById('admin-user-display').innerText = `${session.user.email}`;
+                
+                document.getElementById('desktop-admin-btn').classList.remove('hidden');
+                document.getElementById('desktop-admin-btn').classList.add('flex');
+                const mobileBtn = document.getElementById('mobile-admin-btn');
+                mobileBtn.classList.remove('hidden'); mobileBtn.classList.add('flex');
+                
+                const activeTab = Array.from(document.querySelectorAll('.mobile-tab-pill')).find(tab => tab.classList.contains('text-brandAccent'));
+                if(activeTab) setMobileSliderState(activeTab);
+
+                refreshAdminStats();
+                renderAdminAdsList();
+                renderAdminHeroList();
             }
         }
 
-        async function executeGoogleAuthenticationChallenge() {
-            if (!dbClient) {
-                alert("Please add your secret API configuration parameters inside Block 1 to trigger secure live database validation handles.");
-                return;
-            }
-            const { error } = await dbClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: window.location.origin + window.location.pathname }
-            });
-            if (error) alert(`Security Verification Failed: ${error.message}`);
-        }
-
-        function displaySecureFormInterface(user) {
-            document.getElementById('admin-auth-gate').classList.replace('block', 'hidden');
-            document.getElementById('admin-dashboard-form').classList.replace('hidden', 'block');
-            document.getElementById('admin-user-display').innerText = `Verified Identity: ${user.email}`;
+        async function handleEmailLogin(e) {
+            e.preventDefault(); if(!dbClient) return;
+            const email = document.getElementById('admin-email').value; const password = document.getElementById('admin-pass').value;
+            const { error } = await dbClient.auth.signInWithPassword({ email, password });
+            if(error) alert(`Login Failed: ${error.message}`); else checkAuthenticationStateSession();
         }
 
         async function executeSignOutRequest() {
             if (dbClient) await dbClient.auth.signOut();
-            document.getElementById('admin-dashboard-form').classList.replace('block', 'hidden');
-            document.getElementById('admin-auth-gate').classList.replace('hidden', 'block');
-        }
-
-        async function handleFormSubmissionEvent(event) {
-            event.preventDefault();
-            if (!dbClient) {
-                alert("Read-Only Live Simulation Mode Active.");
-                return;
-            }
-
-            const payload = {
-                title: document.getElementById('form-title').value,
-                source: document.getElementById('form-source').value,
-                category: document.getElementById('form-category').value,
-                image_url: document.getElementById('form-image').value,
-                summary: document.getElementById('form-summary').value,
-                url: document.getElementById('form-image').value || window.location.href,
-                created_at: new Date().toISOString()
-            };
-
-            const isOriginalPiece = document.getElementById('form-is-original').checked;
-
-            if (isOriginalPiece) {
-                PORTFOLIO_PROJECTS.unshift({
-                    id: 'custom-' + Date.now(),
-                    title: payload.title,
-                    excerpt: payload.summary,
-                    body: document.getElementById('form-body').value || `<p>${payload.summary}</p>`,
-                    categoryLabel: "Original Journalism",
-                    image: sanitizeMediaAssetsList(payload.image_url)
-                });
-                renderPortfolioListing();
-                alert("Original journalism piece successfully attached to portfolio!");
-            } else {
-                // Corrected to .from() to match standard v2 SDK layout calls
-                const { error } = await dbClient.from('articles').insert([payload]);
-                if (error) {
-                    alert(`Database Sync Error: ${error.message}`);
-                } else {
-                    alert("Content node committed straight to real-time production tables!");
-                    await loadPlatformDataEngine();
-                }
-            }
-            document.getElementById('publication-submission-form').reset();
+            document.getElementById('admin-dashboard-form').classList.add('hidden'); 
+            document.getElementById('admin-auth-gate').classList.remove('hidden');
+            
+            document.getElementById('desktop-admin-btn').classList.add('hidden');
+            document.getElementById('desktop-admin-btn').classList.remove('flex');
+            const mobileBtn = document.getElementById('mobile-admin-btn');
+            mobileBtn.classList.add('hidden'); mobileBtn.classList.remove('flex');
+            
             switchGlobalView('home-view');
+            const homeTab = document.querySelectorAll('.mobile-tab-pill')[0];
+            setMobileSliderState(homeTab);
         }
+
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.admin-menu-btn').forEach(btn => {
+                btn.classList.remove('bg-brandAccent', 'text-white'); btn.classList.add('text-h2Color');
+            });
+            event.target.classList.add('bg-brandAccent', 'text-white'); event.target.classList.remove('text-h2Color');
+        }
+
+        function refreshAdminStats() {
+            document.getElementById('stat-posts').innerText = liveArticles.length;
+            document.getElementById('stat-portfolio').innerText = PORTFOLIO_PROJECTS.length;
+            document.getElementById('stat-ads').innerText = liveAds.length;
+            document.getElementById('stat-hero').innerText = liveHeroBanners.length;
+        }
+
+        // --- HERO BANNER CRUD ---
+        function renderAdminHeroList() {
+            document.getElementById('admin-hero-list').innerHTML = liveHeroBanners.map(h => `
+                <tr class="hover:bg-brandBg/50">
+                    <td class="p-3 truncate max-w-[150px] uppercase text-[9px]">${h.pill}</td><td class="p-3 truncate max-w-[150px]">${h.headline}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="editHero('${h.id}')" class="text-brandAccent hover:underline mr-3">Edit</button>
+                        <button onclick="deleteHero('${h.id}')" class="text-red-500 hover:underline">Del</button>
+                    </td>
+                </tr>`).join('');
+        }
+        function handleHeroSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('hero-edit-id').value || 'h' + Date.now();
+            const item = {
+                id, pill: document.getElementById('hero-pill').value, headline: document.getElementById('hero-headline').value,
+                image: document.getElementById('hero-image').value
+            };
+            const idx = liveHeroBanners.findIndex(x => x.id === id);
+            if(idx > -1) liveHeroBanners[idx] = item; else liveHeroBanners.push(item);
+            resetForm('hero'); renderHeroCarousel(); alert("Hero Banner Saved");
+        }
+        function editHero(id) {
+            const h = liveHeroBanners.find(x => x.id == id); if(!h) return;
+            document.getElementById('hero-edit-id').value = h.id; document.getElementById('hero-pill').value = h.pill;
+            document.getElementById('hero-headline').value = h.headline; document.getElementById('hero-image').value = h.image;
+            document.getElementById('hero-form-title').innerText = "Edit Hero Banner";
+        }
+        function deleteHero(id) {
+            if(confirm("Delete this Hero Banner?")) { liveHeroBanners = liveHeroBanners.filter(x => x.id !== id); renderHeroCarousel(); }
+        }
+
+        // --- POSTS CRUD ---
+        function renderAdminPostsList() {
+            document.getElementById('admin-posts-list').innerHTML = liveArticles.map(p => `
+                <tr class="hover:bg-brandBg/50">
+                    <td class="p-3 truncate max-w-[200px]">${p.title}</td><td class="p-3 uppercase text-[9px]">${p.categoryLabel}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="editPost('${p.id}')" class="text-brandAccent hover:underline mr-3">Edit</button>
+                        <button onclick="deletePost('${p.id}')" class="text-red-500 hover:underline">Del</button>
+                    </td>
+                </tr>`).join('');
+        }
+        async function handlePostSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('post-edit-id').value;
+            const payload = {
+                title: document.getElementById('post-title').value, source: document.getElementById('post-source').value,
+                category: document.getElementById('post-category').value, image_url: document.getElementById('post-image').value,
+                summary: document.getElementById('post-summary').value, excerpt: document.getElementById('post-summary').value,
+                url: document.getElementById('post-image').value || window.location.href, created_at: new Date().toISOString()
+            };
+            if(!dbClient) return;
+            if(id) { await dbClient.from('articles').update(payload).eq('id', id); alert("Post Updated"); } 
+            else { await dbClient.from('articles').insert([payload]); alert("Post Created"); }
+            resetForm('posts'); await loadPlatformDataEngine();
+        }
+        function editPost(id) {
+            const p = liveArticles.find(x => x.id == id); if(!p) return;
+            document.getElementById('post-edit-id').value = p.id; document.getElementById('post-title').value = p.title;
+            document.getElementById('post-source').value = p.source; document.getElementById('post-category').value = p.category;
+            document.getElementById('post-image').value = p.image_url; document.getElementById('post-summary').value = p.summary;
+            document.getElementById('post-form-title').innerText = "Edit Post";
+        }
+        async function deletePost(id) {
+            if(confirm("Delete this post?")) { await dbClient.from('articles').delete().eq('id', id); await loadPlatformDataEngine(); }
+        }
+
+        // --- PORTFOLIO CRUD ---
+        function renderAdminPortfolioList() {
+            document.getElementById('admin-portfolio-list').innerHTML = PORTFOLIO_PROJECTS.map(p => `
+                <tr class="hover:bg-brandBg/50">
+                    <td class="p-3 truncate max-w-[200px]">${p.title}</td><td class="p-3 uppercase text-[9px]">${p.categoryLabel}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="editPortfolio('${p.id}')" class="text-brandAccent hover:underline mr-3">Edit</button>
+                        <button onclick="deletePortfolio('${p.id}')" class="text-red-500 hover:underline">Del</button>
+                    </td>
+                </tr>`).join('');
+        }
+        function handlePortfolioSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('port-edit-id').value || 'p' + Date.now();
+            const item = {
+                id, title: document.getElementById('port-title').value, categoryLabel: document.getElementById('port-cat').value,
+                image: document.getElementById('port-image').value, excerpt: document.getElementById('port-excerpt').value,
+                body: document.getElementById('port-body').value
+            };
+            const idx = PORTFOLIO_PROJECTS.findIndex(x => x.id === id);
+            if(idx > -1) PORTFOLIO_PROJECTS[idx] = item; else PORTFOLIO_PROJECTS.unshift(item);
+            resetForm('portfolio'); renderPortfolioListing(); alert("Portfolio Saved");
+        }
+        function editPortfolio(id) {
+            const p = PORTFOLIO_PROJECTS.find(x => x.id == id); if(!p) return;
+            document.getElementById('port-edit-id').value = p.id; document.getElementById('port-title').value = p.title;
+            document.getElementById('port-cat').value = p.categoryLabel; document.getElementById('port-image').value = p.image;
+            document.getElementById('port-excerpt').value = p.excerpt; document.getElementById('port-body').value = p.body;
+            document.getElementById('port-form-title').innerText = "Edit Portfolio Item";
+        }
+        function deletePortfolio(id) {
+            if(confirm("Delete this portfolio item?")) { PORTFOLIO_PROJECTS = PORTFOLIO_PROJECTS.filter(x => x.id !== id); renderPortfolioListing(); }
+        }
+
+        // --- ADS CRUD ---
+        function renderAdminAdsList() {
+            document.getElementById('admin-ads-list').innerHTML = liveAds.map(a => `
+                <tr class="hover:bg-brandBg/50">
+                    <td class="p-3 truncate max-w-[150px] uppercase text-[9px]">${a.client}</td><td class="p-3 truncate max-w-[150px]">${a.title}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="editAd('${a.id}')" class="text-brandAccent hover:underline mr-3">Edit</button>
+                        <button onclick="deleteAd('${a.id}')" class="text-red-500 hover:underline">Del</button>
+                    </td>
+                </tr>`).join('');
+            renderArticleCardsGrid(liveArticles); refreshAdminStats();
+        }
+        function handleAdSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('ad-edit-id').value || 'ad' + Date.now();
+            const item = {
+                id, client: document.getElementById('ad-client').value, btn: document.getElementById('ad-btn').value,
+                title: document.getElementById('ad-title').value, url: document.getElementById('ad-url').value
+            };
+            const idx = liveAds.findIndex(x => x.id === id);
+            if(idx > -1) liveAds[idx] = item; else liveAds.push(item);
+            resetForm('ads'); renderAdminAdsList(); alert("Ad Banner Saved");
+        }
+        function editAd(id) {
+            const a = liveAds.find(x => x.id == id); if(!a) return;
+            document.getElementById('ad-edit-id').value = a.id; document.getElementById('ad-client').value = a.client;
+            document.getElementById('ad-btn').value = a.btn; document.getElementById('ad-title').value = a.title; document.getElementById('ad-url').value = a.url;
+            document.getElementById('ad-form-title').innerText = "Edit Ad Banner";
+        }
+        function deleteAd(id) {
+            if(confirm("Delete this Ad?")) { liveAds = liveAds.filter(x => x.id !== id); renderAdminAdsList(); }
+        }
+
+        // Form Reset Helper
+        function resetForm(type) {
+            if(type === 'posts') { document.getElementById('form-posts').reset(); document.getElementById('post-edit-id').value = ''; document.getElementById('post-form-title').innerText = "Add New Post"; }
+            if(type === 'portfolio') { document.getElementById('form-portfolio').reset(); document.getElementById('port-edit-id').value = ''; document.getElementById('port-form-title').innerText = "Add Portfolio Item"; }
+            if(type === 'ads') { document.getElementById('form-ads').reset(); document.getElementById('ad-edit-id').value = ''; document.getElementById('ad-form-title').innerText = "Add Ad Banner"; }
+            if(type === 'hero') { document.getElementById('form-hero').reset(); document.getElementById('hero-edit-id').value = ''; document.getElementById('hero-form-title').innerText = "Add Hero Banner"; }
+        }
+
     </script>
 </body>
 </html>
