@@ -6,6 +6,14 @@
     <meta name="description" content="B-LOGS - A premium hybrid platform tracking haute joaillerie, couture, luxury assets, and original editorial portfolio works.">
     <title>B-LOGS | Hybrid Fashion & Luxury Publication</title>
 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-S0XQH5FVKW');
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
@@ -373,7 +381,6 @@
             dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // DYNAMIC ARRAYS FOR CRUD
         let liveArticles = [];
         let PORTFOLIO_PROJECTS = [
             { id: "p1", title: "Architectural Geometries inside Contemporary Domains", excerpt: "A descriptive write-up analyzing texture values.", body: "<p>Curation workflows within luxury frameworks require deliberate balancing mechanisms.</p>", categoryLabel: "Editorial", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000" },
@@ -405,9 +412,6 @@
             checkAuthenticationStateSession();
         });
 
-        // ==========================================
-        // UI & DYNAMIC NAVIGATION STATE
-        // ==========================================
         function handleNavigationState(clickedElement, viewPanelId) {
             setMobileSliderState(clickedElement);
             switchGlobalView(viewPanelId);
@@ -447,11 +451,12 @@
                 }
             });
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', { page_path: '/' + viewPanelId });
+            }
         }
 
-        // ==========================================
-        // DYNAMIC HERO CAROUSEL LOGIC
-        // ==========================================
         function renderHeroCarousel() {
             const wrapper = document.getElementById('carousel-wrapper');
             const dotsContainer = document.getElementById('carousel-dots-container');
@@ -499,9 +504,6 @@
             });
         }
 
-        // ==========================================
-        // FEED RENDERING & MULTI-IMAGE GALLERY
-        // ==========================================
         async function loadPlatformDataEngine() {
             if (dbClient) {
                 const { data, error } = await dbClient.from('articles').select('*').order('published_at', { ascending: false });
@@ -559,7 +561,6 @@
             articlesList.forEach((item, index) => {
                 htmlPayload += generateArticleMarkup(item, index);
                 
-                // DYNAMIC AD INJECTION
                 if ((index + 1) % 5 === 0 && liveAds.length > 0) {
                     let ad = liveAds[Math.floor(index / 5) % liveAds.length];
                     htmlPayload += `
@@ -573,9 +574,6 @@
             target.innerHTML = htmlPayload;
         }
 
-        // ==========================================
-        // QUOTE, PORTFOLIO & CATEGORY LOGIC
-        // ==========================================
         async function fetchDailyQuote() {
             let quote = "Luxury is attention to detail, originality, exclusivity and above all quality.";
             let author = "Angelo Donghia";
@@ -666,9 +664,6 @@
                 const mobileBtn = document.getElementById('mobile-admin-btn');
                 mobileBtn.classList.remove('hidden'); mobileBtn.classList.add('flex');
                 
-                const activeTab = Array.from(document.querySelectorAll('.mobile-tab-pill')).find(tab => tab.classList.contains('text-brandAccent'));
-                if(activeTab) setMobileSliderState(activeTab);
-
                 refreshAdminStats();
                 renderAdminAdsList();
                 renderAdminHeroList();
@@ -713,7 +708,6 @@
             document.getElementById('stat-hero').innerText = liveHeroBanners.length;
         }
 
-        // --- HERO BANNER CRUD ---
         function renderAdminHeroList() {
             document.getElementById('admin-hero-list').innerHTML = liveHeroBanners.map(h => `
                 <tr class="hover:bg-brandBg/50">
@@ -745,7 +739,6 @@
             if(confirm("Delete this Hero Banner?")) { liveHeroBanners = liveHeroBanners.filter(x => x.id !== id); renderHeroCarousel(); }
         }
 
-        // --- POSTS CRUD ---
         function renderAdminPostsList() {
             document.getElementById('admin-posts-list').innerHTML = liveArticles.map(p => `
                 <tr class="hover:bg-brandBg/50">
@@ -781,7 +774,6 @@
             if(confirm("Delete this post?")) { await dbClient.from('articles').delete().eq('id', id); await loadPlatformDataEngine(); }
         }
 
-        // --- PORTFOLIO CRUD ---
         function renderAdminPortfolioList() {
             document.getElementById('admin-portfolio-list').innerHTML = PORTFOLIO_PROJECTS.map(p => `
                 <tr class="hover:bg-brandBg/50">
@@ -815,7 +807,6 @@
             if(confirm("Delete this portfolio item?")) { PORTFOLIO_PROJECTS = PORTFOLIO_PROJECTS.filter(x => x.id !== id); renderPortfolioListing(); }
         }
 
-        // --- ADS CRUD ---
         function renderAdminAdsList() {
             document.getElementById('admin-ads-list').innerHTML = liveAds.map(a => `
                 <tr class="hover:bg-brandBg/50">
@@ -848,7 +839,6 @@
             if(confirm("Delete this Ad?")) { liveAds = liveAds.filter(x => x.id !== id); renderAdminAdsList(); }
         }
 
-        // Form Reset Helper
         function resetForm(type) {
             if(type === 'posts') { document.getElementById('form-posts').reset(); document.getElementById('post-edit-id').value = ''; document.getElementById('post-form-title').innerText = "Add New Post"; }
             if(type === 'portfolio') { document.getElementById('form-portfolio').reset(); document.getElementById('port-edit-id').value = ''; document.getElementById('port-form-title').innerText = "Add Portfolio Item"; }
