@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 from datetime import datetime
 from urllib.parse import urlparse
 import feedparser
@@ -71,27 +72,38 @@ def identify_target_category(title_string: str, body_string: str) -> str:
             return category_key
     return None
 
-def extract_all_media_assets(feed_entry, body_html: str) -> list:
-    """Extracts images, attachment enclosures, and video paths to store in an array."""
-    extracted_urls = []
-    if "media_content" in feed_entry:
-        for content_item in feed_entry.media_content:
-            if "url" in content_item:
-                extracted_urls.append(content_item["url"])
-    if "enclosures" in feed_entry:
-        for enclosure in feed_entry.enclosures:
-            if "href" in enclosure:
-                extracted_urls.append(enclosure["href"])
+def extract_best_image(entry, body_html: str) -> str:
+    """Hunts down images hidden in messy RSS feeds using a multi-tiered approach."""
+    # 1. Try standard 'media_content'
+    if 'media_content' in entry and len(entry.media_content) > 0:
+        return entry.media_content[0].get('url')
+    
+    # 2. Try 'media_thumbnail'
+    if 'media_thumbnail' in entry and len(entry.media_thumbnail) > 0:
+        return entry.media_thumbnail[0].get('url')
+        
+    # 3. Try 'links' or enclosures (Standard for many blogs)
+    if 'links' in entry:
+        for link in entry.links:
+            if 'image' in link.get('type', '') or link.get('rel') == 'enclosure':
+                return link.get('href')
+                
+    # 4. Try parsing the HTML summary using BeautifulSoup
     if body_html:
         soup = BeautifulSoup(body_html, "html.parser")
-        for img in soup.find_all("img"):
-            src_link = img.get("src") or img.get("data-src")
-            if src_link and src_link not in extracted_urls:
-                extracted_urls.append(src_link)
-    if not extracted_urls:
-        # High-end placeholder if the source article has absolutely no image media tags
-        extracted_urls.append("https://images.unsplash.com/photo-1543872084-c7bd3822856f?auto=format&fit=crop&q=80&w=1000")
-    return list(dict.fromkeys(extracted_urls))
+        img_tag = soup.find("img")
+        if img_tag:
+            src_link = img_tag.get("src") or img_tag.get("data-src")
+            if src_link:
+                return src_link
+                
+    # 5. Ultimate Fallback: Raw Regex on the text
+    img_match = re.search(r'<img[^>]+src=["\'](.*?)["\']', body_html)
+    if img_match:
+        return img_match.group(1)
+        
+    # Return None if absolutely no image exists; frontend will apply premium Unsplash fallback
+    return None
 
 def execute_ingestion_pipeline():
     print(f"\n[{datetime.now()}] Activating pipeline aggregation cycle...")
@@ -130,13 +142,18 @@ def execute_ingestion_pipeline():
                 if not clean_preview_text:
                     clean_preview_text = "Explore the full coverage detailing this season's latest design shift directly at the official publisher link."
 
+                # Find the best possible image URL
+                found_image_url = extract_best_image(entry, raw_summary)
+
+                # PERFECTLY MATCHED PAYLOAD FOR SUPABASE & FRONTEND
                 payload = {
                     "source": origin_domain,
                     "title": headline,
                     "url": article_url,
                     "excerpt": clean_preview_text,
+                    "summary": clean_preview_text, # Added to map perfectly to frontend
                     "body": raw_summary,
-                    "media_assets": extract_all_media_assets(entry, raw_summary),
+                    "image_url": found_image_url, # Changed from media_assets to match Supabase schema
                     "category": selected_cat,
                     "is_original": False,
                     "is_advertisement": False,
