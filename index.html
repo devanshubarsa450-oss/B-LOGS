@@ -539,9 +539,9 @@
         }
 
         function generateArticleMarkup(item, index) {
-            let rawImageUrl = item.image_url;
+            // FIX: Intelligently check for both column names to prevent crashes
+            let rawImage = item.image_url || item.media_assets;
             
-            // 1. Establish premium fallbacks
             const premiumFallbacks = [
                 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800', 
                 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800', 
@@ -550,26 +550,27 @@
             
             let imageUrls = [];
 
-            // 2. Intelligent Parsing Logic
-            if (!rawImageUrl || rawImageUrl.trim() === '' || rawImageUrl === 'null' || rawImageUrl === 'undefined') {
+            if (!rawImage || rawImage === 'null' || rawImage === 'undefined') {
                 imageUrls = [premiumFallbacks[(index || 0) % premiumFallbacks.length]];
-            } else {
-                let cleanStr = rawImageUrl;
-                if (cleanStr.startsWith('{') && cleanStr.endsWith('}')) {
-                    cleanStr = cleanStr.slice(1, -1);
-                }
+            } else if (Array.isArray(rawImage)) {
+                // Handle case where Supabase returns a native JavaScript Array
+                imageUrls = rawImage.filter(url => url && url.length > 5);
+            } else if (typeof rawImage === 'string') {
+                // Handle case where Supabase returns a messy Postgres string
+                let cleanStr = rawImage.trim();
+                if (cleanStr.startsWith('{') && cleanStr.endsWith('}')) cleanStr = cleanStr.slice(1, -1);
+                if (cleanStr.startsWith('[') && cleanStr.endsWith(']')) cleanStr = cleanStr.slice(1, -1);
                 
                 imageUrls = cleanStr.split(',').map(url => {
                     let cleanedUrl = url.trim();
-                    if (cleanedUrl.startsWith('"') && cleanedUrl.endsWith('"')) {
-                        cleanedUrl = cleanedUrl.slice(1, -1);
-                    }
+                    if (cleanedUrl.startsWith('"') && cleanedUrl.endsWith('"')) cleanedUrl = cleanedUrl.slice(1, -1);
+                    if (cleanedUrl.startsWith("'") && cleanedUrl.endsWith("'")) cleanedUrl = cleanedUrl.slice(1, -1);
                     return cleanedUrl;
                 }).filter(url => url.length > 5);
-                
-                if (imageUrls.length === 0) {
-                    imageUrls = [premiumFallbacks[(index || 0) % premiumFallbacks.length]];
-                }
+            }
+            
+            if (imageUrls.length === 0) {
+                imageUrls = [premiumFallbacks[(index || 0) % premiumFallbacks.length]];
             }
 
             let imagesHtml = '';

@@ -21,7 +21,7 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 # Initialize Supabase Admin Client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Custom fashion and luxury category keywords dictionaries expanded to match production content
+# Custom fashion and luxury category keywords dictionaries
 CATEGORY_KEYWORDS = {
     "diamond_jewelry": [
         "diamond", "grillz", "iced out", "ring", "pendant", "fine jewelry", "cartier", 
@@ -43,15 +43,25 @@ CATEGORY_KEYWORDS = {
     "affordable_luxury": [
         "beauty", "fragrance", "lipstick", "luxury entry", "eyewear", "sunglasses", "cardholder", 
         "perfume", "makeup", "skincare", "bag", "wallet", "shoes", "sneakers", "streetwear", "accessories"
+    ],
+    "super_cars": [
+        "supercar", "hypercar", "ferrari", "lamborghini", "mclaren", "bugatti", "pagani", 
+        "koenigsegg", "aston martin", "porsche 911", "v12", "exotic car", "gt3"
     ]
 }
 
 # Industry operational high-end feeds
 TARGET_RSS_FEEDS = [
+    # Fashion & Luxury Business Feeds
     "https://www.businessoffashion.com/feed",
     "https://wwd.com/feed",
     "https://fashionista.com/.rss/excerpt",
-    "https://theindustry.fashion/feed"
+    "https://theindustry.fashion/feed",
+    
+    # Supercar Feeds
+    "https://www.thesupercarblog.com/feed/",
+    "https://gtspirit.com/feed/",
+    "https://www.supercars.net/blog/feed/"
 ]
 
 def clean_and_parse_timestamp(feed_entry) -> str:
@@ -72,8 +82,9 @@ def identify_target_category(title_string: str, body_string: str) -> str:
             return category_key
     return None
 
-def extract_best_image(entry, body_html: str) -> str:
-    """Hunts down images hidden in messy RSS feeds using a multi-tiered approach."""
+def extract_best_image(entry) -> str:
+    """Hunts down images hidden in messy RSS feeds, bypassing lazy-loaders and tracking pixels."""
+    
     # 1. Try standard 'media_content'
     if 'media_content' in entry and len(entry.media_content) > 0:
         return entry.media_content[0].get('url')
@@ -82,25 +93,46 @@ def extract_best_image(entry, body_html: str) -> str:
     if 'media_thumbnail' in entry and len(entry.media_thumbnail) > 0:
         return entry.media_thumbnail[0].get('url')
         
-    # 3. Try 'links' or enclosures (Standard for many blogs)
+    # 3. Try 'enclosures' and 'links' (Standard for many blogs)
+    if 'enclosures' in entry and len(entry.enclosures) > 0:
+        for enc in entry.enclosures:
+            if 'image' in enc.get('type', '') or enc.get('href', '').endswith(('.jpg', '.png', '.jpeg', '.webp')):
+                return enc.get('href')
+
     if 'links' in entry:
         for link in entry.links:
             if 'image' in link.get('type', '') or link.get('rel') == 'enclosure':
                 return link.get('href')
                 
-    # 4. Try parsing the HTML summary using BeautifulSoup
-    if body_html:
-        soup = BeautifulSoup(body_html, "html.parser")
-        img_tag = soup.find("img")
-        if img_tag:
-            src_link = img_tag.get("src") or img_tag.get("data-src")
-            if src_link:
+    # 4. Search deep inside both the summary AND the full article content
+    html_blocks = []
+    if 'summary' in entry:
+        html_blocks.append(entry.summary)
+    if 'content' in entry and len(entry.content) > 0:
+        html_blocks.append(entry.content[0].value)
+
+    for html_content in html_blocks:
+        if not html_content:
+            continue
+            
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # Find all images
+        for img in soup.find_all("img"):
+            # Publishers like WWD use 'lazy loading' which hides the real image in data attributes.
+            # We must check data-src and data-lazy-src BEFORE standard src!
+            src_link = img.get("data-src") or img.get("data-lazy-src") or img.get("src")
+            
+            # Reject 1x1 tracking pixels or empty links
+            if src_link and "1x1" not in src_link and "pixel" not in src_link.lower():
                 return src_link
                 
-    # 5. Ultimate Fallback: Raw Regex on the text
-    img_match = re.search(r'<img[^>]+src=["\'](.*?)["\']', body_html)
-    if img_match:
-        return img_match.group(1)
+        # 5. Ultimate Fallback: Raw Regex on the text block looking for lazy loaded attributes
+        img_match = re.search(r'<img[^>]+(?:data-src|data-lazy-src|src)=["\'](.*?)["\']', html_content)
+        if img_match:
+            # Quick check to avoid picking up a tracking pixel from regex
+            if "1x1" not in img_match.group(1):
+                return img_match.group(1)
         
     # Return None if absolutely no image exists; frontend will apply premium Unsplash fallback
     return None
@@ -113,7 +145,7 @@ def execute_ingestion_pipeline():
 
     for current_url in TARGET_RSS_FEEDS:
         origin_domain = urlparse(current_url).netloc
-        # Clean domain names for a premium aesthetic (e.g., www.businessoffashion.com -> businessoffashion.com)
+        # Clean domain names for a premium aesthetic
         if origin_domain.startswith("www."):
             origin_domain = origin_domain[4:]
 
@@ -124,10 +156,14 @@ def execute_ingestion_pipeline():
             
             for entry in parsed_feed.entries:
                 headline = entry.get("title", "").strip()
+                
+                # Fetch both summary and the deeper content chunk for logic matching
                 raw_summary = entry.get("summary", "") or entry.get("description", "")
+                deep_content = entry.get('content', [{'value': ''}])[0].get('value')
+                logic_text = raw_summary + " " + deep_content
                 
                 # Run content through our intelligent matching filter matrix
-                selected_cat = identify_target_category(headline, raw_summary)
+                selected_cat = identify_target_category(headline, logic_text)
                 if not selected_cat:
                     total_skipped += 1
                     continue
@@ -142,8 +178,8 @@ def execute_ingestion_pipeline():
                 if not clean_preview_text:
                     clean_preview_text = "Explore the full coverage detailing this season's latest design shift directly at the official publisher link."
 
-                # Find the best possible image URL
-                found_image_url = extract_best_image(entry, raw_summary)
+                # Find the best possible image URL using the new ultra-smart function
+                found_image_url = extract_best_image(entry)
 
                 # PERFECTLY MATCHED PAYLOAD FOR SUPABASE & FRONTEND
                 payload = {
@@ -151,9 +187,9 @@ def execute_ingestion_pipeline():
                     "title": headline,
                     "url": article_url,
                     "excerpt": clean_preview_text,
-                    "summary": clean_preview_text, # Added to map perfectly to frontend
+                    "summary": clean_preview_text, 
                     "body": raw_summary,
-                    "image_url": found_image_url, # Changed from media_assets to match Supabase schema
+                    "image_url": found_image_url, 
                     "category": selected_cat,
                     "is_original": False,
                     "is_advertisement": False,
