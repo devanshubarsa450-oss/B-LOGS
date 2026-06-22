@@ -23,6 +23,11 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Custom fashion and luxury category keywords dictionaries
 CATEGORY_KEYWORDS = {
+    # UPDATE 1: Moved super_cars to the very top so it filters cars BEFORE jewelry
+    "super_cars": [
+        "supercar", "hypercar", "ferrari", "lamborghini", "mclaren", "bugatti", "pagani", 
+        "koenigsegg", "aston martin", "porsche 911", "v12", "exotic car", "gt3"
+    ],
     "diamond_jewelry": [
         "diamond", "grillz", "iced out", "ring", "pendant", "fine jewelry", "cartier", 
         "vancleef", "jewelry", "jewellery", "watch", "watches", "gold", "silver", "patek", "rolex", "gem"
@@ -43,10 +48,6 @@ CATEGORY_KEYWORDS = {
     "affordable_luxury": [
         "beauty", "fragrance", "lipstick", "luxury entry", "eyewear", "sunglasses", "cardholder", 
         "perfume", "makeup", "skincare", "bag", "wallet", "shoes", "sneakers", "streetwear", "accessories"
-    ],
-    "super_cars": [
-        "supercar", "hypercar", "ferrari", "lamborghini", "mclaren", "bugatti", "pagani", 
-        "koenigsegg", "aston martin", "porsche 911", "v12", "exotic car", "gt3"
     ]
 }
 
@@ -74,12 +75,17 @@ def clean_and_parse_timestamp(feed_entry) -> str:
             pass
     return datetime.utcnow().isoformat()
 
+# UPDATE 2: Upgraded function to use Regex word boundaries (\b)
 def identify_target_category(title_string: str, body_string: str) -> str:
-    """Scans content across categorization vectors to select exact segment keys."""
+    """Scans content across categorization vectors using EXACT word matching to prevent substring errors."""
     combined_body = f"{title_string} {body_string}".lower()
+    
     for category_key, word_list in CATEGORY_KEYWORDS.items():
-        if any(keyword in combined_body for keyword in word_list):
-            return category_key
+        for keyword in word_list:
+            # \b ensures it only matches the exact isolated word (e.g. "ring" but not "steering")
+            if re.search(r'\b' + re.escape(keyword) + r'\b', combined_body):
+                return category_key
+                
     return None
 
 def extract_best_image(entry) -> str:
