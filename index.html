@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="B-LOGS - A premium hybrid platform tracking haute joaillerie, couture, luxury assets, and original editorial portfolio works.">
     <title>B-LOGS | Hybrid Fashion & Luxury Publication</title>
-
+    
+    <link rel="icon" type="image/x-icon" href="favicon.png">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-S0XQH5FVKW"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -164,11 +165,7 @@
                             <div id="xo-cell-8" onclick="handleXOMove(8)" class="cell-push-3d flex items-center justify-center font-playfair text-3xl font-bold bg-white text-h1Color cursor-pointer border-b-4 border-r-4 border-slate-300 select-none h-16"></div>
                         </div>
 
-                        <div id="xo-popout-overlay" class="hidden absolute top-1/2 left-1/2 bg-yellow-400 text-white border-4 border-black px-6 py-4 text-center z-30 tracking-tight text-2xl uppercase whitespace-nowrap select-none rotate-[-4deg]"></div>
-                    </div>
-
-                    <div class="w-full text-center">
-                        <button onclick="resetXOPlayground()" class="w-full py-3 bg-transparent border-2 border-white/30 text-white text-[10px] font-bold font-poppins uppercase tracking-widest hover:border-brandAccent hover:text-brandAccent transition-colors">Restart Match</button>
+                        <div id="xo-popout-overlay" class="hidden absolute top-1/2 left-1/2 bg-yellow-400 text-white border-4 border-black px-6 py-4 text-center z-30 font-bold comic-pop-3d"></div>
                     </div>
                 </div>
             </div>
@@ -222,7 +219,7 @@
 
             <div class="mt-20 pt-8 border-t border-brandAccent/10 text-center pb-8">
                 <p class="font-bodoni text-[10px] md:text-xs text-h2Color tracking-widest uppercase font-semibold">Designed & Engineered by</p>
-                <p class="font-vibes text-3xl md:text-4xl text-brandAccent mt-3">~ Dee_Barsa</p>
+                <p class="font-vibes text-1xl md:text-4xl text-brandAccent mt-3">~ Dee_Barsa</p>
             </div>
         </section>
 
@@ -245,7 +242,8 @@
 
             <div class="mt-20 pt-8 border-t border-brandAccent/10 text-center pb-8">
                 <p class="font-bodoni text-[10px] md:text-xs text-h2Color tracking-widest uppercase font-semibold">Designed & Engineered by</p>
-                <p class="font-vibes text-3xl md:text-4xl text-brandAccent mt-3">~ Dee_Barsa</p>
+                <p class="font-vibes text-1xl md:text-3xl text-brandAccent mt-3 font-bold">~ Dee_Barsa</p>
+</div>
             </div>
         </section>
 
@@ -491,6 +489,7 @@
         let userSymbol = "X";
         let aiSymbol = "O";
         let activePlayerName = "PLAYER";
+        let gamePoolTimeout = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
             const defaultMobilePill = document.querySelectorAll('.mobile-tab-pill')[0];
@@ -507,7 +506,7 @@
         });
 
         // ==========================================
-        // UNBEATABLE MINIMAX AI GAMING ENGINE
+        // SMART PATTERN UNBEATABLE ZERO-LAG AI
         // ==========================================
         function revealXOGameBoard() {
             const nameInput = document.getElementById("player-name-input").value.trim();
@@ -531,7 +530,7 @@
             }, 400);
         }
 
-        function trigger3DComicReaction(message, colorClass = "bg-yellow-400 text-black") {
+        function trigger3ComicReaction(message, colorClass = "bg-yellow-400 text-black") {
             const overlay = document.getElementById("xo-popout-overlay");
             overlay.innerText = message;
             overlay.className = `absolute top-1/2 left-1/2 border-4 border-black px-6 py-4 text-center z-30 font-bold comic-pop-3d ${colorClass}`;
@@ -546,47 +545,66 @@
         function handleXOMove(cellIndex) {
             if (xoBoard[cellIndex] !== "" || !isGameActive) return;
             
-            // Add a visual depression style class on item selection
             document.getElementById(`xo-cell-${cellIndex}`).classList.add("cell-pressed-3d");
             
             xoBoard[cellIndex] = userSymbol;
             renderXOUpdate();
             
             if (evaluateBoardWinner(xoBoard, userSymbol)) {
-    trigger3DComicReaction(`WOOOH! ${activePlayerName} WON!`, "bg-green-400 text-white");
-    updateGameStatusMessage("MATCH OVER.");
-    isGameActive = false;
-    return;
-}
+                trigger3ComicReaction(`WOOOH! ${activePlayerName} WON!`, "bg-green-400 text-white");
+                updateGameStatusMessage("MATCH OVER. AUTO-RESTARTING...");
+                isGameActive = false;
+                if(gamePoolTimeout) clearTimeout(gamePoolTimeout);
+                gamePoolTimeout = setTimeout(resetXOPlayground, 3000);
+                return;
+            }
             
             if (!xoBoard.includes("")) {
-                trigger3DComicReaction("TIED GAME!", "bg-slate-300 text-white");
-                updateGameStatusMessage("MATCH OVER.");
+                trigger3ComicReaction("TIED GAME!", "bg-slate-300 text-white");
+                updateGameStatusMessage("MATCH OVER. AUTO-RESTARTING...");
                 isGameActive = false;
+                if(gamePoolTimeout) clearTimeout(gamePoolTimeout);
+                gamePoolTimeout = setTimeout(resetXOPlayground, 3000);
                 return;
             }
             
             isGameActive = false;
-            updateGameStatusMessage("ENGINE CALCULATING...");
-            setTimeout(() => {
-                executeHardenedAIMove();
-            }, 400);
+            updateGameStatusMessage("DEE'S TURN.");
+            if(gamePoolTimeout) clearTimeout(gamePoolTimeout);
+            
+            gamePoolTimeout = setTimeout(() => {
+                executeInstantPatternAIMove();
+            }, 35);
         }
 
-        function executeHardenedAIMove() {
-            // Out of 10 matches, play perfectly 7 times, slip up 3 times to hit requested win probability ratio
-            let simulateErrorChance = Math.random() < 0.3;
+        function executeInstantPatternAIMove() {
             let targetMoveIndex = -1;
 
-            if (simulateErrorChance) {
+            // Offensive: Can AI win this move?
+            targetMoveIndex = findWinningMove(aiSymbol);
+
+            // Defensive: Does player have a winning move? If so, block it.
+            if (targetMoveIndex === -1) {
+                targetMoveIndex = findWinningMove(userSymbol);
+            }
+
+            // Strategic: Take center if available
+            if (targetMoveIndex === -1 && xoBoard[4] === "") {
+                targetMoveIndex = 4;
+            }
+
+            // Fallback strategy: Play a corner or remaining edge
+            if (targetMoveIndex === -1) {
                 let emptyIndices = [];
                 xoBoard.forEach((val, idx) => { if(val === "") emptyIndices.push(idx); });
-                if(emptyIndices.length > 0) {
+                
+                if (Math.random() < 0.05 && emptyIndices.length > 0) {
+                    // Rare deliberate AI slip up (5% of the time)
                     targetMoveIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+                } else {
+                    const preferredOrder = [0, 2, 6, 8, 1, 3, 5, 7];
+                    targetMoveIndex = preferredOrder.find(idx => emptyIndices.includes(idx)) ?? -1;
                 }
-            } else {
-                let optimalResult = runMinimaxAlgorithm(xoBoard, aiSymbol);
-                targetMoveIndex = optimalResult.index;
             }
             
             if (targetMoveIndex !== -1) {
@@ -594,77 +612,42 @@
                 renderXOUpdate();
                 
                 if (evaluateBoardWinner(xoBoard, aiSymbol)) {
-                    trigger3DComicReaction("YOU LOST!", "bg-red-500 text-white");
-                    updateGameStatusMessage("MATCH OVER.");
+                    trigger3ComicReaction("YOU LOST!", "bg-red-500 text-white");
+                    updateGameStatusMessage("MATCH OVER. AUTO-RESTARTING...");
                     isGameActive = false;
+                    if(gamePoolTimeout) clearTimeout(gamePoolTimeout);
+                    gamePoolTimeout = setTimeout(resetXOPlayground, 3000);
                     return;
                 }
             }
             
             if (!xoBoard.includes("")) {
-                trigger3DComicReaction("TIED GAME!", "bg-slate-300 text-black");
-                updateGameStatusMessage("MATCH OVER.");
+                trigger3ComicReaction("TIED GAME!", "bg-slate-300 text-black");
+                updateGameStatusMessage("MATCH OVER. AUTO-RESTARTING...");
+                isGameActive = false;
+                if(gamePoolTimeout) clearTimeout(gamePoolTimeout);
+                gamePoolTimeout = setTimeout(resetXOPlayground, 3000);
             } else {
                 updateGameStatusMessage("YOUR TURN.");
                 isGameActive = true;
             }
         }
 
+        function findWinningMove(playerSymbol) {
+            const lines = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+            for (const line of lines) {
+                let symbolsInLine = line.filter(idx => xoBoard[idx] === playerSymbol);
+                let emptyInLine = line.filter(idx => xoBoard[idx] === "");
+                if (symbolsInLine.length === 2 && emptyInLine.length === 1) {
+                    return emptyInLine[0];
+                }
+            }
+            return -1;
+        }
+
         function evaluateBoardWinner(board, player) {
             const wins = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
             return wins.some(comb => board[comb[0]] === player && board[comb[1]] === player && board[comb[2]] === player);
-        }
-
-        function runMinimaxAlgorithm(newBoard, player) {
-            let availableSpots = [];
-            newBoard.forEach((val, idx) => { if(val === "") availableSpots.push(idx); });
-
-            if (evaluateBoardWinner(newBoard, userSymbol)) {
-                return { score: -10 };
-            } else if (evaluateBoardWinner(newBoard, aiSymbol)) {
-                return { score: 10 };
-            } else if (availableSpots.length === 0) {
-                return { score: 0 };
-            }
-
-            let theoreticalMoves = [];
-            for (let i = 0; i < availableSpots.length; i++) {
-                let currentHypothesis = {};
-                currentHypothesis.index = availableSpots[i];
-                newBoard[availableSpots[i]] = player;
-
-                if (player === aiSymbol) {
-                    let result = runMinimaxAlgorithm(newBoard, userSymbol);
-                    currentHypothesis.score = result.score;
-                } else {
-                    let result = runMinimaxAlgorithm(newBoard, aiSymbol);
-                    currentHypothesis.score = result.score;
-                }
-
-                newBoard[availableSpots[i]] = "";
-                theoreticalMoves.push(currentHypothesis);
-            }
-
-            let bestCalculatedMove;
-            if (player === aiSymbol) {
-                let alphaScore = -10000;
-                for (let i = 0; i < theoreticalMoves.length; i++) {
-                    if (theoreticalMoves[i].score > alphaScore) {
-                        alphaScore = theoreticalMoves[i].score;
-                        bestCalculatedMove = i;
-                    }
-                }
-            } else {
-                let betaScore = 10000;
-                for (let i = 0; i < theoreticalMoves.length; i++) {
-                    if (theoreticalMoves[i].score < betaScore) {
-                        betaScore = theoreticalMoves[i].score;
-                        bestCalculatedMove = i;
-                    }
-                }
-            }
-
-            return theoreticalMoves[bestCalculatedMove];
         }
 
         function renderXOUpdate() {
@@ -684,6 +667,8 @@
         }
 
         function resetXOPlayground() {
+            if(gamePoolTimeout) clearTimeout(gamePoolTimeout);
+            gamePoolTimeout = null;
             xoBoard = ["", "", "", "", "", "", "", "", ""];
             isGameActive = true;
             document.getElementById("xo-popout-overlay").classList.add("hidden");
@@ -725,11 +710,14 @@
 
             const menuButtonIndexMap = { 'home-view': 0, 'categories-view': 1, 'portfolio-view': 2, 'admin-view': 3 };
             const desktopLinks = document.querySelectorAll('#desktop-nav button');
+            
             desktopLinks.forEach((link, idx) => {
                 if (idx === menuButtonIndexMap[viewPanelId]) {
-                    link.className = "nav-link text-brandAccent font-bold border-b-2 border-brandAccent pb-1 transition-all" + (idx===3 && !link.classList.contains('hidden') ? " flex items-center gap-2" : "");
+                    link.classList.remove('text-h2Color');
+                    link.classList.add('text-brandAccent', 'font-bold', 'border-b-2', 'border-brandAccent');
                 } else {
-                    link.className = "nav-link text-h2Color hover:text-brandAccent pb-1 transition-all" + (idx===3 && !link.classList.contains('hidden') ? " flex items-center gap-2" : "");
+                    link.classList.remove('text-brandAccent', 'font-bold', 'border-b-2', 'border-brandAccent');
+                    link.classList.add('text-h2Color');
                 }
             });
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -969,7 +957,8 @@
         // ==========================================
         async function checkAuthenticationStateSession() {
             if (!dbClient) return;
-            const { data: { session } } = await dbClient.auth.getSession();
+            const dataSession = await dbClient.auth.getSession();
+            const session = dataSession?.data?.session;
             if (session && session.user) {
                 document.getElementById('admin-auth-gate').classList.add('hidden');
                 document.getElementById('admin-dashboard-form').classList.remove('hidden');
